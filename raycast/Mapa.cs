@@ -18,8 +18,8 @@ public class Mapa
                 {1,0,0,1,0,0,0,0,0,1},
                 {1,0,0,0,0,0,0,0,0,1},
                 {1,0,0,0,0,0,1,0,0,1},
-                {1,0,0,1,0,1,0,0,0,1},
-                {1,0,1,0,1,0,0,0,0,1},
+                {1,0,0,1,0,1,1,0,0,1},
+                {1,0,1,1,0,0,0,0,0,1},
                 {1,0,0,0,0,0,0,0,0,1},
                 {1,1,1,1,1,1,1,1,1,1}
             };
@@ -46,16 +46,24 @@ public class Mapa
         return Vector2.Distance(posicion, posicionRayo);
     }
 
-    public float[] RayCastFov(Jugador jugador, int resolucion = 320, float distanciaMaxima = 20f)
+    public float[] RayCastFov(Jugador jugador, int resolucion = 240, float distanciaMaxima = 20f)
     {
         float anguloMinimo = jugador.angulo - (jugador.campoDeVision / 2);
         float anguloActual = anguloMinimo;
         float pasoAngulo = jugador.campoDeVision / resolucion;
         float[] distancias = new float[resolucion];
+        float distanciaReal = 0;
 
         for (int i = 0; i < resolucion; i++)
         {
-            distancias[i] = RayCast(jugador.posicion, anguloActual);
+
+            distanciaReal = RayCast(jugador.posicion, anguloActual);
+
+            //correcion del ojo de pez
+            //float diferenciaAngular = anguloActual - jugador.angulo;
+            //float distanciaCorregida = distanciaReal * (float)Math.Cos(diferenciaAngular);
+
+            distancias[i] = distanciaReal;
             anguloActual += pasoAngulo;
         }
 

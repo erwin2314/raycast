@@ -13,6 +13,7 @@ public class Game1 : Game
     public Jugador jugador;
     public Mapa mapa;
     public RayCastRenderer rayCastRenderer;
+    public KeyboardState keyboardState;
 
     public Game1()
     {
@@ -20,7 +21,7 @@ public class Game1 : Game
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
         _graphics.PreferredBackBufferHeight = 512;
-        _graphics.PreferredBackBufferWidth = 1024;
+        _graphics.PreferredBackBufferWidth = 1200;
     }
 
     protected override void Initialize()
@@ -45,8 +46,9 @@ public class Game1 : Game
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
 
-
-        jugador.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
+        keyboardState = Keyboard.GetState();
+        jugador.Update((float)gameTime.ElapsedGameTime.TotalSeconds, keyboardState, mapa);
+        Console.WriteLine(jugador.posicion);
 
         base.Update(gameTime);
     }

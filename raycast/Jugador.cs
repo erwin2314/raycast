@@ -1,22 +1,18 @@
 using System;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-public class Jugador
+public class Jugador : Entidad
 {
-    public Vector2 posicion;
-    public float velociadDeRotacion;
-    public float campoDeVision;
-    public float angulo;
-    public float velocidadDeMovimiento;
-
     public Jugador
     (
         Vector2 posicion = new Vector2(),
-        float velociadDeRotacion = 1f,
+        float velociadDeRotacion = 2f,
         float campoDeVision = 90,
         float angulo = 0,
-        float velocidadDeMovimiento = 1
+        float velocidadDeMovimiento = 2f,
+        Texture2D sprite = null
     )
     {
         if (posicion == Vector2.Zero)
@@ -28,6 +24,7 @@ public class Jugador
         this.campoDeVision = MathHelper.ToRadians(campoDeVision);
         this.angulo = MathHelper.ToRadians(angulo);
         this.velocidadDeMovimiento = velocidadDeMovimiento;
+        this.sprite = sprite;
     }
 
     public void Update(float deltaTime, KeyboardState keyboardState, Mapa mapa)
@@ -59,10 +56,5 @@ public class Jugador
         
     }
 
-    public void Rotar(float deltaTime, int rotarDerecha = 1) //1 = derecha, -1 = izquierda
-    {
-        angulo = angulo + (rotarDerecha * velociadDeRotacion) * deltaTime;
-        angulo %= MathF.Tau; // MathF.Tau es igual a 2π
-
-    }
+    
 }

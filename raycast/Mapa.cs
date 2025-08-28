@@ -15,11 +15,11 @@ public class Mapa
                 {1,1,1,1,1,1,1,1,1,1},
                 {1,0,0,0,0,0,0,0,0,1},
                 {1,0,0,0,0,0,1,0,0,1},
-                {1,0,0,1,0,0,0,0,0,1},
+                {1,0,1,0,0,0,0,0,0,1},
+                {1,0,1,0,0,0,0,0,0,1},
+                {1,0,0,0,1,0,1,0,0,1},
+                {1,0,0,1,1,1,1,0,0,1},
                 {1,0,0,0,0,0,0,0,0,1},
-                {1,0,0,0,0,0,1,0,0,1},
-                {1,0,0,1,0,1,1,0,0,1},
-                {1,0,1,1,0,0,0,0,0,1},
                 {1,0,0,0,0,0,0,0,0,1},
                 {1,1,1,1,1,1,1,1,1,1}
             };
@@ -46,7 +46,7 @@ public class Mapa
         return Vector2.Distance(posicion, posicionRayo);
     }
 
-    public float[] RayCastFov(Jugador jugador, int resolucion = 240, float distanciaMaxima = 20f)
+    public float[] RayCastFov(Jugador jugador, int resolucion = 256, float distanciaMaxima = 20f)
     {
         float anguloMinimo = jugador.angulo - (jugador.campoDeVision / 2);
         float anguloActual = anguloMinimo;

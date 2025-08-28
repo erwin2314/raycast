@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -14,14 +16,16 @@ public class Game1 : Game
     public Mapa mapa;
     public RayCastRenderer rayCastRenderer;
     public KeyboardState keyboardState;
+    public List<Entidad> listaEntidades;
+    
 
     public Game1()
     {
         _graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
-        _graphics.PreferredBackBufferHeight = 512;
-        _graphics.PreferredBackBufferWidth = 1200;
+        _graphics.PreferredBackBufferHeight = 720;
+        _graphics.PreferredBackBufferWidth = 1280;
     }
 
     protected override void Initialize()
@@ -29,7 +33,8 @@ public class Game1 : Game
         jugador = new Jugador();
         mapa = new Mapa();
         _spriteBatch = new SpriteBatch(GraphicsDevice);
-        rayCastRenderer = new RayCastRenderer(_spriteBatch, jugador, _graphics.PreferredBackBufferHeight, _graphics.PreferredBackBufferWidth);
+        listaEntidades = new List<Entidad>();
+        rayCastRenderer = new RayCastRenderer(_spriteBatch, jugador, _graphics.PreferredBackBufferHeight, _graphics.PreferredBackBufferWidth, mapa, listaEntidades);
 
         base.Initialize();
     }
@@ -48,7 +53,6 @@ public class Game1 : Game
 
         keyboardState = Keyboard.GetState();
         jugador.Update((float)gameTime.ElapsedGameTime.TotalSeconds, keyboardState, mapa);
-        Console.WriteLine(jugador.posicion);
 
         base.Update(gameTime);
     }
@@ -58,7 +62,7 @@ public class Game1 : Game
         GraphicsDevice.Clear(Color.CornflowerBlue);
 
         _spriteBatch.Begin();
-        rayCastRenderer.DibujarFrame(mapa);
+        rayCastRenderer.DibujarFrame();
         _spriteBatch.End();
 
         

@@ -12,6 +12,7 @@ public class Game1 : Game
     private SpriteBatch _spriteBatch;
     public Jugador jugador;
     public Mapa mapa;
+    public RayCastRenderer rayCastRenderer;
 
     public Game1()
     {
@@ -26,13 +27,15 @@ public class Game1 : Game
     {
         jugador = new Jugador();
         mapa = new Mapa();
+        _spriteBatch = new SpriteBatch(GraphicsDevice);
+        rayCastRenderer = new RayCastRenderer(_spriteBatch, jugador, _graphics.PreferredBackBufferHeight, _graphics.PreferredBackBufferWidth);
 
         base.Initialize();
     }
 
     protected override void LoadContent()
     {
-        _spriteBatch = new SpriteBatch(GraphicsDevice);
+        
 
         // TODO: use this.Content to load your game content here
     }
@@ -44,7 +47,6 @@ public class Game1 : Game
 
 
         jugador.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
-        Console.WriteLine(jugador.posicion + "distancia a pared: " + mapa.RayCast(jugador.posicion, jugador.angulo));
 
         base.Update(gameTime);
     }
@@ -53,7 +55,11 @@ public class Game1 : Game
     {
         GraphicsDevice.Clear(Color.CornflowerBlue);
 
-        // TODO: Add your drawing code here
+        _spriteBatch.Begin();
+        rayCastRenderer.DibujarFrame(mapa);
+        _spriteBatch.End();
+
+        
 
         base.Draw(gameTime);
     }

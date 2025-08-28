@@ -14,110 +14,53 @@ public class Mapa
             this.mapa_terreno = new int[,] {
                 {1,1,1,1,1,1,1,1,1,1},
                 {1,0,0,0,0,0,0,0,0,1},
-                {1,0,0,1,1,1,1,0,0,1},
-                {1,0,0,1,0,0,1,0,0,1},
-                {1,0,0,1,0,0,1,0,0,1},
-                {1,0,0,1,0,1,1,0,0,1},
+                {1,0,0,0,0,0,1,0,0,1},
+                {1,0,0,1,0,0,0,0,0,1},
                 {1,0,0,0,0,0,0,0,0,1},
-                {1,0,0,0,0,0,0,0,0,1},
+                {1,0,0,0,0,0,1,0,0,1},
+                {1,0,0,1,0,1,0,0,0,1},
+                {1,0,1,0,1,0,0,0,0,1},
                 {1,0,0,0,0,0,0,0,0,1},
                 {1,1,1,1,1,1,1,1,1,1}
             };
         }
     }
 
-    public float RayCast(Vector2 posicion, float angulo, float distanciaMaxima = 20f) //la posicion es del jugador
+    public float RayCast(Vector2 posicion, float angulo, float tamañoPaso = 0.005f, float distanciaMaxima = 10f) //la posicion es del jugador
     {
         Vector2 anguloVector = new Vector2(Convert.ToSingle(Math.Cos(angulo)), Convert.ToSingle(Math.Sin(angulo)));
+        Vector2 posicionRayo = posicion;
 
-        int mapX = (int)posicion.X; //posicion actual del rayo
-        int mapY = (int)posicion.Y;
+        bool hit = false;
 
-        float deltaDistX = Math.Abs(1f / anguloVector.X); //distancia que tiene que recorrer para cruzarse con una linea
-        float deltaDistY = Math.Abs(1f / anguloVector.Y);
-
-        int stepX = 0;// direccion del paso (-1 0 +1)
-        int stepY = 0;
-
-        float sideDistX = 0; //distancia desde la posicion actual a la siguiente linea
-        float sideDistY = 0;
-
-        if (anguloVector.X < 0)
-        {
-            stepX = -1; //se mueve para la izquierda
-            sideDistX = (posicion.X - mapX) * deltaDistX;
-        }
-        else
-        {
-            stepX = 1; //se mueve para la derecha
-            sideDistX = (posicion.X + 1f - mapX) * deltaDistX;
-        }
-
-        if (anguloVector.Y < 0)
-        {
-            stepY = -1; //se mueve para la izquierda
-            sideDistY = (posicion.Y - mapY) * deltaDistY;
-        }
-        else
-        {
-            stepY = 1; //se mueve para la derecha
-            sideDistY = (posicion.Y + 1f - mapY) * deltaDistY;
-        }
-
-        bool hit = false; //se golpeo un pared
-        int side = 0; // tipo de pared 0 = vertical 1 = horizontal
-        //loop principal
         while (!hit)
         {
-            if (sideDistX < sideDistY) //decidimos si dar un paso en X o Y
-            {
-                sideDistX += deltaDistX;
-                mapX += stepX; // avanzamos una casilla en X
-                side = 0; // indicamos que cruzamos un linea vertical
-            }
-            else
-            {
-                sideDistY += deltaDistY;
-                mapY += stepY; // avanzamos una casilla en Y
-                side = 1; // indicamos que cruzamos un linea horizontal
-            }
+            posicionRayo = posicionRayo + (anguloVector * tamañoPaso);
 
-            if (EsPared(mapX, mapY))
+            if (EsPared(posicionRayo.X, posicionRayo.Y) || Vector2.Distance(posicion, posicionRayo) > distanciaMaxima)
             {
-                hit = true; // verifica si hay una pared en la coordenada
+                hit = true;
             }
         }
 
-        float WallDist;
-
-        if (side == 0)
-        {
-            // Golpeamos una pared vertical
-            WallDist = (mapX - posicion.X + (1 - stepX) / 2) / anguloVector.X;
-            return WallDist;
-        }
-        else
-        {
-            // Golpeamos una pared horizontal  
-            WallDist = (mapY - posicion.Y + (1 - stepY) / 2) / anguloVector.Y;
-            return WallDist;
-        }
+        return Vector2.Distance(posicion, posicionRayo);
     }
 
-    public float[] RayCastFov(Jugador jugador, float resolucion = 1024, float distanciaMaxima = 20f)
+    public float[] RayCastFov(Jugador jugador, int resolucion = 320, float distanciaMaxima = 20f)
     {
-        float pasoDeAngulo = jugador.campoDeVision / resolucion;
-        float[] distancias = new float[(int)resolucion];
         float anguloMinimo = jugador.angulo - (jugador.campoDeVision / 2);
         float anguloActual = anguloMinimo;
+        float pasoAngulo = jugador.campoDeVision / resolucion;
+        float[] distancias = new float[resolucion];
 
         for (int i = 0; i < resolucion; i++)
         {
-            distancias[i] = RayCast(jugador.posicion, anguloActual, distanciaMaxima);
-            anguloActual += pasoDeAngulo;
+            distancias[i] = RayCast(jugador.posicion, anguloActual);
+            anguloActual += pasoAngulo;
         }
 
         return distancias;
+        
     }
 
     public bool EsPared(float x, float y)

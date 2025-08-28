@@ -11,7 +11,7 @@ public class Jugador
     public Jugador
     (
         Vector2 posicion = new Vector2(),
-        float velociadDeRotacion = 0.05f,
+        float velociadDeRotacion = 0.15f,
         float campoDeVision = 90,
         float angulo = 0
     )
@@ -22,7 +22,8 @@ public class Jugador
         }
 
         this.velociadDeRotacion = velociadDeRotacion;
-        this.campoDeVision = campoDeVision;
+        this.campoDeVision = MathHelper.ToRadians(campoDeVision);
+        this.angulo = MathHelper.ToRadians(angulo);
     }
 
     public void Update(float deltaTime)
@@ -32,7 +33,6 @@ public class Jugador
 
     public void Rotar(float deltaTime)
     {
-
         angulo = angulo + velociadDeRotacion * deltaTime;
         angulo %= MathF.Tau; // MathF.Tau es igual a 2π
 

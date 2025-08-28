@@ -29,3 +29,4 @@ C:\Users\carlo\OneDrive\Desktop\Monogame\raycast\raycast\obj\Debug\net8.0\refint
 C:\Users\carlo\OneDrive\Desktop\Monogame\raycast\raycast\obj\Debug\net8.0\raycast.pdb
 C:\Users\carlo\OneDrive\Desktop\Monogame\raycast\raycast\obj\Debug\net8.0\raycast.genruntimeconfig.cache
 C:\Users\carlo\OneDrive\Desktop\Monogame\raycast\raycast\obj\Debug\net8.0\ref\raycast.dll
+C:\Users\carlo\OneDrive\Desktop\Monogame\raycast\raycast\obj\Debug\net8.0\raycast.sourcelink.json

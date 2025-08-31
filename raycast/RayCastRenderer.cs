@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -59,6 +61,60 @@ public class RayCastRenderer
             colorConIntensidad = Color.Blue * intensidad;
 
             spriteBatch.Draw(texture2D, new Rectangle((int)posicionX, (int)posicionY, (int)anchoRectangulo, (int)alturaRectangulo), colorConIntensidad);
+
         }
+        
+        DibujarSprites();
+    }
+
+    public void DibujarSprites()
+    {
+        float anguloRelativoAlJugador = 0;
+        Vector2 vectorDeDireccionJugadorAEntidad;
+        float anguloAbsoluto = 0;
+        float _alturaSprite = 0;
+        float _anchoSprite = 0;
+        float posY = alturaVentana / 2;
+        float posX = 0;
+        float intensidad = 1f;
+
+        foreach (Entidad entidad in listaEntidades)
+        {
+            entidad.distanciaAJugador = Vector2.Distance(entidad.posicion, jugador.posicion);
+        }
+
+        listaEntidades = listaEntidades.OrderByDescending(x => x.distanciaAJugador).ToList<Entidad>();
+
+        foreach (Entidad entidad in listaEntidades)
+        {
+            vectorDeDireccionJugadorAEntidad = entidad.posicion - jugador.posicion;
+            anguloAbsoluto = MathF.Atan2(vectorDeDireccionJugadorAEntidad.Y, vectorDeDireccionJugadorAEntidad.X);
+
+            anguloRelativoAlJugador = anguloAbsoluto - jugador.angulo;
+
+            while (anguloRelativoAlJugador > MathF.PI) anguloRelativoAlJugador -= MathF.Tau;
+            while (anguloRelativoAlJugador < -MathF.PI) anguloRelativoAlJugador += MathF.Tau;
+
+
+            if (anguloRelativoAlJugador >= -(jugador.campoDeVision / 2) && anguloRelativoAlJugador <= (jugador.campoDeVision / 2) && entidad.distanciaAJugador <= 10f)
+            {
+                if (!mapa.RayCast(jugador.posicion, entidad.posicion))
+                {
+                    _alturaSprite = entidad.alturaSprite / ((entidad.distanciaAJugador / alturaVentana) * 1000f);
+                    _anchoSprite = entidad.anchoSprite / entidad.distanciaAJugador;
+                    posX = ((anguloRelativoAlJugador / jugador.campoDeVision) * anchoVentana + (anchoVentana / 2)) - (_anchoSprite / 2);
+
+                    intensidad = (1f / entidad.distanciaAJugador) * 3.5f;
+                    intensidad = Math.Clamp(intensidad, 0.05f, 1f);
+
+                    Color colorConIntensidad = Color.White * intensidad;
+
+                    spriteBatch.Draw(entidad.sprite, new Rectangle((int)posX, (int)posY, (int)_anchoSprite, (int)_alturaSprite), colorConIntensidad);
+                }
+                
+            }
+
+        }
+        
     }
 }

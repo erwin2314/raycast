@@ -9,19 +9,24 @@ public class Mapa
         int[,] mapa_terreno = null
     )
     {
-        if (mapa_terreno == null)
-        {
+        if (mapa_terreno == null) //por alguna razon que no entiendo del todo al momento de dibujarlo esta invertido
+        { 
             this.mapa_terreno = new int[,] {
-                {1,1,1,1,1,1,1,1,1,1},
-                {1,0,0,0,0,0,0,0,0,1},
-                {1,0,0,0,0,0,1,0,0,1},
-                {1,0,1,0,0,0,0,0,0,1},
-                {1,0,1,0,0,0,0,0,0,1},
-                {1,0,0,0,1,0,1,0,0,1},
-                {1,0,0,1,1,1,1,0,0,1},
-                {1,0,0,0,0,0,0,0,0,1},
-                {1,0,0,0,0,0,0,0,0,1},
-                {1,1,1,1,1,1,1,1,1,1}
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+                {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+                {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+                {1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+                {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+                {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+                {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+                {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+                {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+                {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+                {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+                {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+                {1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1},
+                {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+                { 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
             };
         }
     }
@@ -45,8 +50,32 @@ public class Mapa
 
         return Vector2.Distance(posicion, posicionRayo);
     }
+    
+    public bool RayCast(Vector2 posicion, Vector2 objetivo, float tamañoPaso = 0.005f, float distanciaMaxima = 10f) //la posicion es del jugador
+    {
+        Vector2 anguloVector = objetivo - posicion;
+        Vector2 posicionRayo = posicion;
 
-    public float[] RayCastFov(Jugador jugador, int resolucion = 256, float distanciaMaxima = 20f)
+        bool hit = false; //falso si no choca con ninguna pared
+
+        while (!hit)
+        {
+            posicionRayo = posicionRayo + (anguloVector * tamañoPaso);
+
+            if (EsPared(posicionRayo.X, posicionRayo.Y) || Vector2.Distance(posicion, posicionRayo) > distanciaMaxima)
+            {
+                hit = true;
+            }
+            else if (Vector2.Distance(posicionRayo, objetivo) < 0.05f)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public float[] RayCastFov(Jugador jugador, int resolucion = 256, float distanciaMaxima = 10f)
     {
         float anguloMinimo = jugador.angulo - (jugador.campoDeVision / 2);
         float anguloActual = anguloMinimo;
@@ -57,7 +86,7 @@ public class Mapa
         for (int i = 0; i < resolucion; i++)
         {
 
-            distanciaReal = RayCast(jugador.posicion, anguloActual);
+            distanciaReal = RayCast(jugador.posicion, anguloActual, distanciaMaxima: 10f);
 
             //correcion del ojo de pez
             //float diferenciaAngular = anguloActual - jugador.angulo;
@@ -68,14 +97,14 @@ public class Mapa
         }
 
         return distancias;
-        
+
     }
 
     public bool EsPared(float x, float y)
     {
         try
         {
-            if (mapa_terreno[(int)x, (int)y] == 1)
+            if (mapa_terreno[(int)y, (int)x] == 1)
             {
                 return true;
             }

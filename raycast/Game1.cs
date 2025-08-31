@@ -17,6 +17,7 @@ public class Game1 : Game
     public RayCastRenderer rayCastRenderer;
     public KeyboardState keyboardState;
     public List<Entidad> listaEntidades;
+    public Entidad entidadPrueba;
     
 
     public Game1()
@@ -35,7 +36,15 @@ public class Game1 : Game
         _spriteBatch = new SpriteBatch(GraphicsDevice);
         listaEntidades = new List<Entidad>();
         rayCastRenderer = new RayCastRenderer(_spriteBatch, jugador, _graphics.PreferredBackBufferHeight, _graphics.PreferredBackBufferWidth, mapa, listaEntidades);
-
+        entidadPrueba = new Entidad(new Vector2(3, 3), sprite: Content.Load<Texture2D>("Assets/Sprites/placeHolder"));
+        for (int i = 0; i < 5; i++)
+        {
+            Entidad entidadT = new Entidad(entidadPrueba);
+            entidadT.posicion.X += i;
+           
+            rayCastRenderer.listaEntidades.Add(entidadT);
+        }
+        
         base.Initialize();
     }
 

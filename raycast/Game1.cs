@@ -31,20 +31,22 @@ public class Game1 : Game
 
     protected override void Initialize()
     {
-        jugador = new Jugador();
+        jugador = new Jugador(sprite: Content.Load<Texture2D>("Assets/Sprites/placeHolder"));
         mapa = new Mapa();
         _spriteBatch = new SpriteBatch(GraphicsDevice);
         listaEntidades = new List<Entidad>();
         rayCastRenderer = new RayCastRenderer(_spriteBatch, jugador, _graphics.PreferredBackBufferHeight, _graphics.PreferredBackBufferWidth, mapa, listaEntidades);
-        entidadPrueba = new Entidad(new Vector2(3, 3), sprite: Content.Load<Texture2D>("Assets/Sprites/placeHolder"));
-        for (int i = 0; i < 5; i++)
-        {
-            Entidad entidadT = new Entidad(entidadPrueba);
-            entidadT.posicion.X += i;
-           
-            rayCastRenderer.listaEntidades.Add(entidadT);
-        }
-        
+        entidadPrueba = new Jugador(new Vector2(3, 3), sprite: Content.Load<Texture2D>("Assets/Sprites/placeHolder"));
+        rayCastRenderer.listaEntidades.Add(entidadPrueba);
+        rayCastRenderer.listaEntidades.Add(jugador);
+        //for (int i = 0; i < 5; i++)
+        //{
+        //Entidad entidadT = new Entidad(entidadPrueba);
+        //entidadT.posicion.X += i;
+
+        //rayCastRenderer.listaEntidades.Add(entidadT);
+        //}
+
         base.Initialize();
     }
 
@@ -62,6 +64,10 @@ public class Game1 : Game
 
         keyboardState = Keyboard.GetState();
         jugador.Update((float)gameTime.ElapsedGameTime.TotalSeconds, keyboardState, mapa);
+
+        rayCastRenderer.listaEntidades[0].Mover(jugador.posicion, (float)gameTime.ElapsedGameTime.TotalSeconds);
+        
+        
 
         base.Update(gameTime);
     }

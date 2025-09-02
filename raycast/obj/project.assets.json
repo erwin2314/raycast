@@ -109,6 +109,19 @@
           }
         }
       },
+      "RiptideNetworking.Riptide/2.2.1": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.0/RiptideNetworking.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.0/RiptideNetworking.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "System.Memory/4.5.3": {
         "type": "package",
         "compile": {
@@ -217,6 +230,21 @@
         "nvorbis.nuspec"
       ]
     },
+    "RiptideNetworking.Riptide/2.2.1": {
+      "sha512": "hTswUBlFzxxmX5BjX3rlSr2pcCmsFfR7Q9iTZThdwnT1ZysVUjLJzpklHvXnGpkr3qypqv7JecYyFeXQ2U/LuQ==",
+      "type": "package",
+      "path": "riptidenetworking.riptide/2.2.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/netstandard2.0/RiptideNetworking.dll",
+        "lib/netstandard2.0/RiptideNetworking.xml",
+        "nuget-readme.md",
+        "package-icon.png",
+        "riptidenetworking.riptide.2.2.1.nupkg.sha512",
+        "riptidenetworking.riptide.nuspec"
+      ]
+    },
     "System.Memory/4.5.3": {
       "sha512": "3oDzvc/zzetpTKWMShs1AADwZjQ/36HnsufHRPcOjyRAAMLDlu2iD33MBI2opxnezcVUtXyqDXXjoFMOU9c7SA==",
       "type": "package",
@@ -286,7 +314,8 @@
   "projectFileDependencyGroups": {
     "net8.0": [
       "MonoGame.Content.Builder.Task >= 3.8.*",
-      "MonoGame.Framework.DesktopGL >= 3.8.*"
+      "MonoGame.Framework.DesktopGL >= 3.8.*",
+      "RiptideNetworking.Riptide >= 2.2.1"
     ]
   },
   "packageFolders": {
@@ -339,6 +368,10 @@
           "MonoGame.Framework.DesktopGL": {
             "target": "Package",
             "version": "[3.8.*, )"
+          },
+          "RiptideNetworking.Riptide": {
+            "target": "Package",
+            "version": "[2.2.1, )"
           }
         },
         "imports": [

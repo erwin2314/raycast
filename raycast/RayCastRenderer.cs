@@ -74,7 +74,6 @@ public class RayCastRenderer
         float anguloAbsoluto = 0;
         float _alturaSprite = 0;
         float _anchoSprite = 0;
-        float posY = alturaVentana / 2;
         float posX = 0;
         float intensidad = 1f;
 
@@ -100,12 +99,16 @@ public class RayCastRenderer
             {
                 if (!mapa.RayCast(jugador.posicion, entidad.posicion))
                 {
-                    _alturaSprite = entidad.alturaSprite / ((entidad.distanciaAJugador / alturaVentana) * 1000f);
+                    _alturaSprite = entidad.alturaSprite / ((entidad.distanciaAJugador / alturaVentana) * 720f);
+                    
                     _anchoSprite = entidad.anchoSprite / entidad.distanciaAJugador;
-                    posX = ((anguloRelativoAlJugador / jugador.campoDeVision) * anchoVentana + (anchoVentana / 2)) - (_anchoSprite / 2);
+                    float offsetYEscalado = (float)entidad.posYEnum / ((entidad.distanciaAJugador / alturaVentana) * 720f);
+
+                    posX = ((anguloRelativoAlJugador + jugador.campoDeVision / 2) / jugador.campoDeVision * anchoVentana) - (_anchoSprite / 2);
+                    float posY = ((alturaVentana / 2) - (_alturaSprite / 2) - offsetYEscalado);
 
                     intensidad = (1f / entidad.distanciaAJugador) * 3.5f;
-                    intensidad = Math.Clamp(intensidad, 0.05f, 1f);
+                    intensidad = Math.Clamp(intensidad, 0.01f, 1f);
 
                     Color colorConIntensidad = Color.White * intensidad;
 

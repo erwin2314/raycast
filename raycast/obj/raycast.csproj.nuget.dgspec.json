@@ -51,6 +51,10 @@
             "MonoGame.Framework.DesktopGL": {
               "target": "Package",
               "version": "[3.8.*, )"
+            },
+            "RiptideNetworking.Riptide": {
+              "target": "Package",
+              "version": "[2.2.1, )"
             }
           },
           "imports": [

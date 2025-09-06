@@ -18,7 +18,8 @@ public class Game1 : Game
     public KeyboardState keyboardState;
     public List<Entidad> listaEntidades;
     public Entidad entidadPrueba;
-    
+    public ServidorManger servidorManger;
+    public ClienteManager clienteManager;
 
     public Game1()
     {
@@ -27,25 +28,23 @@ public class Game1 : Game
         IsMouseVisible = true;
         _graphics.PreferredBackBufferHeight = 720;
         _graphics.PreferredBackBufferWidth = 1280;
+        
+        
     }
 
     protected override void Initialize()
     {
+        GestorTexturas.CargarTexturas(Content);
         jugador = new Jugador(sprite: Content.Load<Texture2D>("Assets/Sprites/placeHolder"));
         mapa = new Mapa();
         _spriteBatch = new SpriteBatch(GraphicsDevice);
         listaEntidades = new List<Entidad>();
         rayCastRenderer = new RayCastRenderer(_spriteBatch, jugador, _graphics.PreferredBackBufferHeight, _graphics.PreferredBackBufferWidth, mapa, listaEntidades);
-        entidadPrueba = new Jugador(new Vector2(3, 3), sprite: Content.Load<Texture2D>("Assets/Sprites/placeHolder"));
-        rayCastRenderer.listaEntidades.Add(entidadPrueba);
-        rayCastRenderer.listaEntidades.Add(jugador);
-        //for (int i = 0; i < 5; i++)
-        //{
-        //Entidad entidadT = new Entidad(entidadPrueba);
-        //entidadT.posicion.X += i;
 
-        //rayCastRenderer.listaEntidades.Add(entidadT);
-        //}
+        rayCastRenderer.listaEntidades.Add(jugador);
+
+        servidorManger = new ServidorManger(jugador);
+        clienteManager = new ClienteManager(jugador);
 
         base.Initialize();
     }
@@ -62,12 +61,34 @@ public class Game1 : Game
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
 
+        servidorManger.Update();
+        clienteManager.Update();
+
+
+        Console.WriteLine(servidorManger.server.ClientCount);
         keyboardState = Keyboard.GetState();
         jugador.Update((float)gameTime.ElapsedGameTime.TotalSeconds, keyboardState, mapa);
 
-        rayCastRenderer.listaEntidades[0].Mover(jugador.posicion, (float)gameTime.ElapsedGameTime.TotalSeconds);
-        
-        
+        if (keyboardState.IsKeyDown(Keys.U) && !servidorManger.server.IsRunning)
+        {
+            servidorManger.Iniciar(5000, 10);
+        }
+        if (keyboardState.IsKeyDown(Keys.I) && !clienteManager.client.IsConnected)
+        {
+            clienteManager.Conectarse("127.0.0.1:5000");
+        }
+
+
+
+        if (servidorManger.server.IsRunning)
+        {
+            servidorManger.MandarActualizarJugadores();
+        }
+
+        if (clienteManager.client.IsConnected)
+        {
+            clienteManager.ActualizarJugador();
+        }
 
         base.Update(gameTime);
     }

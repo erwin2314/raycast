@@ -13,6 +13,7 @@ public class Entidad
     public float angulo;
     public float velocidadDeMovimiento;
     public Texture2D sprite;
+    public GestorTexturas.IdTextura idTextura;
     public float anchoSprite;
     public float alturaSprite;
     public float distanciaAJugador;
@@ -26,6 +27,7 @@ public class Entidad
         float angulo = 0,
         float velocidadDeMovimiento = 1,
         Texture2D sprite = null,
+        GestorTexturas.IdTextura idTextura = GestorTexturas.IdTextura.placeHolder,
         float anchoSprite = 256,
         float alturaSprite = 256,
         float distanciaAJugador = 0,
@@ -46,6 +48,11 @@ public class Entidad
         this.angulo = MathHelper.ToRadians(angulo);
         this.velocidadDeMovimiento = velocidadDeMovimiento;
 
+        this.idTextura = idTextura;
+        if (sprite == null)
+        {
+            sprite = GestorTexturas.ObtenerTextura(idTextura);
+        }
         this.sprite = sprite;
         this.anchoSprite = anchoSprite;
         this.alturaSprite = alturaSprite;
@@ -72,6 +79,7 @@ public class Entidad
         this.angulo = MathHelper.ToRadians(entidad.angulo);
         this.velocidadDeMovimiento = entidad.velocidadDeMovimiento;
 
+        this.idTextura = entidad.idTextura;
         this.sprite = entidad.sprite;
         this.anchoSprite = entidad.anchoSprite;
         this.alturaSprite = entidad.alturaSprite;
@@ -80,7 +88,7 @@ public class Entidad
         this.posYEnum = entidad.posYEnum;
     }
 
-    public void SerializarObjetoCompleto(Message mensaje)
+    public virtual void SerializarObjetoCompleto(Message mensaje)
     {
         mensaje.Add(this.posicion.X);
         mensaje.Add(this.posicion.Y);
@@ -88,35 +96,35 @@ public class Entidad
         mensaje.Add(this.campoDeVision);
         mensaje.Add(this.angulo);
         mensaje.Add(this.velocidadDeMovimiento);
-        //mensaje.Add(sprite); como lo puedo mandar?
+        mensaje.Add((int)this.idTextura);
         mensaje.Add(this.anchoSprite);
         mensaje.Add(this.alturaSprite);
         mensaje.Add(this.distanciaAJugador);
         mensaje.Add((float)this.posYEnum);
     }
-    public void SerializarObjetoParcial(Message mensaje)
+    public virtual void SerializarObjetoParcial(Message mensaje)
     {
         mensaje.Add(this.posicion.X);
         mensaje.Add(this.posicion.Y);
     }
 
-    public Entidad DeserializarObjetoCompleto(Message mensaje)
+    public virtual Entidad DeserializarObjetoCompleto(Message mensaje)
     {
         return new Entidad(
             new Vector2(mensaje.GetFloat(), mensaje.GetFloat()),
-            velociadDeRotacion = mensaje.GetFloat(),
-            campoDeVision = mensaje.GetFloat(),
-            angulo = mensaje.GetFloat(),
-            velocidadDeMovimiento = mensaje.GetFloat(),
-            sprite = null,
-            anchoSprite = mensaje.GetFloat(),
-            alturaSprite = mensaje.GetFloat(),
-            distanciaAJugador = mensaje.GetFloat(),
-            posYEnum = (PosYEnum)mensaje.GetFloat()
+            velociadDeRotacion: mensaje.GetFloat(),
+            campoDeVision: mensaje.GetFloat(),
+            angulo: mensaje.GetFloat(),
+            velocidadDeMovimiento: mensaje.GetFloat(),
+            idTextura: (GestorTexturas.IdTextura)mensaje.GetInt(),
+            anchoSprite: mensaje.GetFloat(),
+            alturaSprite: mensaje.GetFloat(),
+            distanciaAJugador: mensaje.GetFloat(),
+            posYEnum: (PosYEnum)mensaje.GetFloat()
             );
     }
 
-    public void DeserializarObjetoParcial(Message mensaje)
+    public virtual void DeserializarObjetoParcial(Message mensaje)
     {
         posicion.X = mensaje.GetFloat();
         posicion.Y = mensaje.GetFloat();

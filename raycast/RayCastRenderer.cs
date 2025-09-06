@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 public class RayCastRenderer
 {
+    public static RayCastRenderer instancia;
     public SpriteBatch spriteBatch;
     public Jugador jugador;
     public int alturaVentana;
@@ -31,6 +32,7 @@ public class RayCastRenderer
         this.anchoVentana = anchoVentana;
         this.mapa = mapa;
         this.listaEntidades = listaEntidades;
+        instancia = this;
 
         texture2D = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
         Color[] colorData = new Color[1];
@@ -63,7 +65,7 @@ public class RayCastRenderer
             spriteBatch.Draw(texture2D, new Rectangle((int)posicionX, (int)posicionY, (int)anchoRectangulo, (int)alturaRectangulo), colorConIntensidad);
 
         }
-        
+
         DibujarSprites();
     }
 
@@ -86,6 +88,7 @@ public class RayCastRenderer
 
         foreach (Entidad entidad in listaEntidades)
         {
+
             vectorDeDireccionJugadorAEntidad = entidad.posicion - jugador.posicion;
             anguloAbsoluto = MathF.Atan2(vectorDeDireccionJugadorAEntidad.Y, vectorDeDireccionJugadorAEntidad.X);
 
@@ -94,13 +97,14 @@ public class RayCastRenderer
             while (anguloRelativoAlJugador > MathF.PI) anguloRelativoAlJugador -= MathF.Tau;
             while (anguloRelativoAlJugador < -MathF.PI) anguloRelativoAlJugador += MathF.Tau;
 
-
-            if (anguloRelativoAlJugador >= -(jugador.campoDeVision / 2) && anguloRelativoAlJugador <= (jugador.campoDeVision / 2) && entidad.distanciaAJugador <= 10f)
+            if (anguloRelativoAlJugador >= -(jugador.campoDeVision / 2) && anguloRelativoAlJugador <= (jugador.campoDeVision / 2) && entidad.distanciaAJugador <= 10f && entidad.distanciaAJugador > 0.1f)
             {
-                if (!mapa.RayCast(jugador.posicion, entidad.posicion))
+                if (mapa.RayCast(jugador.posicion, entidad.posicion))
                 {
-                    _alturaSprite = entidad.alturaSprite / ((entidad.distanciaAJugador / alturaVentana) * 720f);
                     
+                    
+                    _alturaSprite = entidad.alturaSprite / ((entidad.distanciaAJugador / alturaVentana) * 720f);
+
                     _anchoSprite = entidad.anchoSprite / entidad.distanciaAJugador;
                     float offsetYEscalado = (float)entidad.posYEnum / ((entidad.distanciaAJugador / alturaVentana) * 720f);
 
@@ -114,10 +118,23 @@ public class RayCastRenderer
 
                     spriteBatch.Draw(entidad.sprite, new Rectangle((int)posX, (int)posY, (int)_anchoSprite, (int)_alturaSprite), colorConIntensidad);
                 }
-                
+
             }
 
         }
-        
+
+    }
+
+    public void AñadirEntidadAListaDeEntidades(Entidad entidad)
+    {
+        listaEntidades.Add(entidad);
+    }
+
+    public void AñadirEntidadAListaDeEntidades(List<Entidad> entidades)
+    {
+        foreach (Entidad item in entidades)
+        {
+            listaEntidades.Add(item);
+        }
     }
 }

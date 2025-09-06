@@ -13,7 +13,8 @@ public class Jugador : Entidad
         float campoDeVision = 90,
         float angulo = 0,
         float velocidadDeMovimiento = 2f,
-        Texture2D sprite = null
+        Texture2D sprite = null,
+        GestorTexturas.IdTextura idTextura = GestorTexturas.IdTextura.placeHolder
     )
     {
         if (posicion == Vector2.Zero)
@@ -25,6 +26,11 @@ public class Jugador : Entidad
         this.campoDeVision = MathHelper.ToRadians(campoDeVision);
         this.angulo = MathHelper.ToRadians(angulo);
         this.velocidadDeMovimiento = velocidadDeMovimiento;
+        this.idTextura = idTextura;
+        if (sprite == null)
+        {
+            sprite = GestorTexturas.ObtenerTextura(idTextura);
+        }
         this.sprite = sprite;
     }
 
@@ -54,8 +60,44 @@ public class Jugador : Entidad
                 posicion = siguientePosicion;
             }
         }
-        
+
     }
 
+    public override void SerializarObjetoCompleto(Message mensaje)
+    {
+        mensaje.Add(this.posicion.X);
+        mensaje.Add(this.posicion.Y);
+        mensaje.Add(this.velociadDeRotacion);
+        mensaje.Add(this.campoDeVision);
+        mensaje.Add(this.angulo);
+        mensaje.Add(this.velocidadDeMovimiento);
+        mensaje.Add((int)this.idTextura);
+    }
+    public override void SerializarObjetoParcial(Message mensaje)
+    {
+        mensaje.Add(this.posicion.X);
+        mensaje.Add(this.posicion.Y);
+        mensaje.Add(this.angulo);
+    }
+
+    public override Jugador DeserializarObjetoCompleto(Message mensaje)
+    {
+        return new Jugador(
+            new Vector2(mensaje.GetFloat(), mensaje.GetFloat()),
+            velociadDeRotacion: mensaje.GetFloat(),
+            campoDeVision: mensaje.GetFloat(),
+            angulo: mensaje.GetFloat(),
+            velocidadDeMovimiento: mensaje.GetFloat(),
+            sprite: null,
+            idTextura: (GestorTexturas.IdTextura)mensaje.GetInt()
+            );
+    }
+
+    public override void DeserializarObjetoParcial(Message mensaje)
+    {
+        posicion.X = mensaje.GetFloat();
+        posicion.Y = mensaje.GetFloat();
+        angulo = mensaje.GetFloat(); 
+    }
     
 }

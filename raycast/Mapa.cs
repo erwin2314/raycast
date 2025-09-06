@@ -138,32 +138,33 @@ public class Mapa
     
     return distanciaFinal;
     }
-    
-    public bool RayCast(Vector2 posicion, Vector2 objetivo, float tamañoPaso = 0.005f, float distanciaMaxima = 10f) //la posicion es del jugador
+
+    //la posicion es del jugador
+    //hitDistance es la distancia que se utiliza para comprobar si el raycast da al objetivo
+    public bool RayCast(Vector2 posicion, Vector2 objetivo, float tamañoPaso = 0.005f, float distanciaMaxima = 10f, float hitDistance = 0.05f)
     {
         Vector2 anguloVector = objetivo - posicion;
         Vector2 posicionRayo = posicion;
 
-        bool hit = false; //falso si no choca con ninguna pared
+        //verdadero si toca al objetivo
 
-        while (!hit)
+        while (true)
         {
             posicionRayo = posicionRayo + (anguloVector * tamañoPaso);
 
             if (EsPared(posicionRayo.X, posicionRayo.Y) || Vector2.Distance(posicion, posicionRayo) > distanciaMaxima)
             {
-                hit = true;
-            }
-            else if (Vector2.Distance(posicionRayo, objetivo) < 0.05f)
-            {
                 return false;
+            }
+            else if (Vector2.Distance(posicionRayo, objetivo) < hitDistance)
+            {
+                return true;
             }
         }
 
-        return true;
     }
 
-    public float[] RayCastFov(Jugador jugador, int resolucion = 256, float distanciaMaxima = 10f)
+    public float[] RayCastFov(Jugador jugador, int resolucion = 640, float distanciaMaxima = 10f)
     {
         float anguloMinimo = jugador.angulo - (jugador.campoDeVision / 2);
         float anguloActual = anguloMinimo;
@@ -173,7 +174,6 @@ public class Mapa
 
         for (int i = 0; i < resolucion; i++)
         {
-
             distanciaReal = RayCast(jugador.posicion, anguloActual);
             distancias[i] = distanciaReal;
 

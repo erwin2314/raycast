@@ -65,7 +65,6 @@ public class Game1 : Game
         clienteManager.Update();
 
 
-        Console.WriteLine(servidorManger.server.ClientCount);
         keyboardState = Keyboard.GetState();
         jugador.Update((float)gameTime.ElapsedGameTime.TotalSeconds, keyboardState, mapa);
 

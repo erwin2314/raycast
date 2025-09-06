@@ -55,6 +55,7 @@ public class ServidorManger
     }
     public void EnClienteDesconectado(object sender, ServerDisconnectedEventArgs e)
     {
+        RayCastRenderer.instancia.listaEntidades.Remove(jugadores[e.Client.Id]);
         jugadores.Remove(e.Client.Id);
     }
 

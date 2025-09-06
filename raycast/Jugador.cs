@@ -10,7 +10,7 @@ public class Jugador : Entidad
     (
         Vector2 posicion = new Vector2(),
         float velociadDeRotacion = 2f,
-        float campoDeVision = 90,
+        float campoDeVision = 100,
         float angulo = 0,
         float velocidadDeMovimiento = 2f,
         Texture2D sprite = null,

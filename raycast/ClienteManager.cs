@@ -15,6 +15,8 @@ public class ClienteManager
         client = new Client();
         this.jugadorLocal = jugadorLocal;
         jugadores = new Dictionary<int, Jugador>();
+
+        client.Disconnected += DesconeccionForzoza;
     }
 
     public void Conectarse(string IpPuerto)// debe ir la ip y el puerto ej(127.0.0.1:7777)
@@ -25,6 +27,11 @@ public class ClienteManager
     public void Desconectarse()
     {
         client.Disconnect();
+    }
+
+    public void DesconeccionForzoza(Object sender, DisconnectedEventArgs e)
+    {
+
     }
 
     public void Update()
@@ -46,8 +53,9 @@ public class ClienteManager
     {
         foreach (KeyValuePair<int, Jugador> item in jugadores)
         {
-            if (!RayCastRenderer.instancia.listaEntidades.Contains(item.Value))
+            if (!RayCastRenderer.instancia.listaEntidades.Contains(item.Value) || item.Value.existeEnLocal == false)
             {
+                Console.WriteLine("se añadio una entidad" + item.Value.existeEnLocal);
                 RayCastRenderer.instancia.listaEntidades.Add(item.Value);
             }
         }

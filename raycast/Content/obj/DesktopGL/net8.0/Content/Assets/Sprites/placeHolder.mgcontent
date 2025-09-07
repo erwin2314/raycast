@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <SourceFile>C:/Users/carlo/OneDrive/Desktop/Monogame/raycast/raycast/Content/Assets/Sprites/e1bf4802299a5b70f4a75e2ad58c05e0.png</SourceFile>
-  <SourceTime>2025-09-02T17:41:14.7975314-06:00</SourceTime>
+  <SourceTime>2025-08-30T11:29:24.5058468-06:00</SourceTime>
   <DestFile>C:/Users/carlo/OneDrive/Desktop/Monogame/raycast/raycast/Content/bin/DesktopGL/Content/Assets/Sprites/placeHolder.xnb</DestFile>
-  <DestTime>2025-09-06T00:08:00.8422824-06:00</DestTime>
+  <DestTime>2025-09-07T14:22:53.9218238-06:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2025-06-02T04:31:02-06:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

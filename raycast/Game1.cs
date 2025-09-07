@@ -77,7 +77,7 @@ public class Game1 : Game
         }
         if (keyboardState.IsKeyDown(Keys.I) && !clienteManager.client.IsConnected)
         {
-            clienteManager.Conectarse("127.0.0.1:5000");
+            clienteManager.Conectarse("192.168.3.6:5000");
         }
 
 

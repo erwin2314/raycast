@@ -18,6 +18,7 @@ public class Entidad
     public float alturaSprite;
     public float distanciaAJugador;
     public PosYEnum posYEnum;
+    public bool existeEnLocal;
 
     public Entidad
     (
@@ -31,7 +32,8 @@ public class Entidad
         float anchoSprite = 256,
         float alturaSprite = 256,
         float distanciaAJugador = 0,
-        PosYEnum posYEnum = PosYEnum.centro
+        PosYEnum posYEnum = PosYEnum.centro,
+        bool existeEnLocal = true
     )
     {
         if (posicion == Vector2.Zero)
@@ -58,6 +60,7 @@ public class Entidad
         this.alturaSprite = alturaSprite;
         this.distanciaAJugador = distanciaAJugador;
         this.posYEnum = posYEnum;
+        this.existeEnLocal = existeEnLocal;
     }
 
     public Entidad
@@ -86,6 +89,7 @@ public class Entidad
 
         this.distanciaAJugador = entidad.distanciaAJugador;
         this.posYEnum = entidad.posYEnum;
+        this.existeEnLocal = entidad.existeEnLocal;
     }
 
     public virtual void SerializarObjetoCompleto(Message mensaje)
@@ -101,6 +105,7 @@ public class Entidad
         mensaje.Add(this.alturaSprite);
         mensaje.Add(this.distanciaAJugador);
         mensaje.Add((float)this.posYEnum);
+
     }
     public virtual void SerializarObjetoParcial(Message mensaje)
     {
@@ -120,7 +125,8 @@ public class Entidad
             anchoSprite: mensaje.GetFloat(),
             alturaSprite: mensaje.GetFloat(),
             distanciaAJugador: mensaje.GetFloat(),
-            posYEnum: (PosYEnum)mensaje.GetFloat()
+            posYEnum: (PosYEnum)mensaje.GetFloat(),
+            existeEnLocal: false
             );
     }
 

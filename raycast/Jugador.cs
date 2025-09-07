@@ -1,4 +1,5 @@
 using System;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -14,7 +15,8 @@ public class Jugador : Entidad
         float angulo = 0,
         float velocidadDeMovimiento = 2f,
         Texture2D sprite = null,
-        GestorTexturas.IdTextura idTextura = GestorTexturas.IdTextura.placeHolder
+        GestorTexturas.IdTextura idTextura = GestorTexturas.IdTextura.placeHolder,
+        bool existeEnLocal = true
     )
     {
         if (posicion == Vector2.Zero)
@@ -32,6 +34,7 @@ public class Jugador : Entidad
             sprite = GestorTexturas.ObtenerTextura(idTextura);
         }
         this.sprite = sprite;
+
     }
 
     public void Update(float deltaTime, KeyboardState keyboardState, GamePadState gamePadState, Mapa mapa)
@@ -86,19 +89,25 @@ public class Jugador : Entidad
     {
         if (!gamePadState.IsConnected) { return; }
 
-        Vector2 siguientePosicion = new Vector2();
+        Vector2 siguientePosicion = gamePadState.ThumbSticks.Left;
+        
+        if (siguientePosicion == Vector2.Zero && Math.Abs(gamePadState.ThumbSticks.Right.X) < 0.15) { return; }
 
-        siguientePosicion = new Vector2(gamePadState.ThumbSticks.Left.X, gamePadState.ThumbSticks.Left.Y);
+        //Aplicar la fórmula de rotación 2D correcta.
+        Vector2 movimientoRotado = new Vector2(
+            (float)(siguientePosicion.Y * Math.Cos(angulo) - siguientePosicion.X * Math.Sin(angulo)),
+            (float)(siguientePosicion.Y * Math.Sin(angulo) + siguientePosicion.X * Math.Cos(angulo))
+        );
 
-        if (siguientePosicion != Vector2.Zero)
+        if (movimientoRotado != Vector2.Zero)
         {
-            siguientePosicion.Normalize();
-            siguientePosicion = siguientePosicion * velocidadDeMovimiento * deltaTime;
+            movimientoRotado.Normalize();
+            movimientoRotado = movimientoRotado * velocidadDeMovimiento * deltaTime;
         }
 
-        if (!mapa.EsPared(posicion.X + siguientePosicion.X, posicion.Y + siguientePosicion.Y))
+        if (!mapa.EsPared(posicion.X + movimientoRotado.X, posicion.Y + movimientoRotado.Y))
         {
-            posicion += siguientePosicion;
+            posicion += movimientoRotado;
         }
 
         if (Math.Abs(gamePadState.ThumbSticks.Right.X) >= 0.15)
@@ -132,7 +141,8 @@ public class Jugador : Entidad
             angulo: mensaje.GetFloat(),
             velocidadDeMovimiento: mensaje.GetFloat(),
             sprite: null,
-            idTextura: (GestorTexturas.IdTextura)mensaje.GetInt()
+            idTextura: (GestorTexturas.IdTextura)mensaje.GetInt(),
+            existeEnLocal: false
             );
     }
 

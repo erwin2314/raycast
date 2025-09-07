@@ -16,6 +16,7 @@ public class Game1 : Game
     public Mapa mapa;
     public RayCastRenderer rayCastRenderer;
     public KeyboardState keyboardState;
+    public GamePadState gamePadState;
     public List<Entidad> listaEntidades;
     public Entidad entidadPrueba;
     public ServidorManger servidorManger;
@@ -66,7 +67,9 @@ public class Game1 : Game
 
 
         keyboardState = Keyboard.GetState();
-        jugador.Update((float)gameTime.ElapsedGameTime.TotalSeconds, keyboardState, mapa);
+        gamePadState = GamePad.GetState(0);
+
+        jugador.Update((float)gameTime.ElapsedGameTime.TotalSeconds, keyboardState, gamePadState, mapa);
 
         if (keyboardState.IsKeyDown(Keys.U) && !servidorManger.server.IsRunning)
         {

@@ -34,35 +34,78 @@ public class Jugador : Entidad
         this.sprite = sprite;
     }
 
-    public void Update(float deltaTime, KeyboardState keyboardState, Mapa mapa)
+    public void Update(float deltaTime, KeyboardState keyboardState, GamePadState gamePadState, Mapa mapa)
     {
-        if (keyboardState.IsKeyDown(Keys.D))
-        {
-            Rotar(deltaTime, 1);
-        }
+        MoverseTeclado(deltaTime, keyboardState, mapa);
+        MoverseControl(deltaTime, gamePadState, mapa);
+    }
+
+    public void MoverseTeclado(float deltaTime, KeyboardState keyboardState, Mapa mapa)
+    {
+        Vector2 siguientePosicion = new Vector2();
         if (keyboardState.IsKeyDown(Keys.A))
         {
-            Rotar(deltaTime, -1);
+            siguientePosicion += new Vector2((float)Math.Sin(angulo), -(float)Math.Cos(angulo));
+        }
+        if (keyboardState.IsKeyDown(Keys.D))
+        {
+            siguientePosicion += new Vector2(-(float)Math.Sin(angulo), (float)Math.Cos(angulo));
         }
         if (keyboardState.IsKeyDown(Keys.W))
         {
-            Vector2 siguientePosicion = posicion + (velocidadDeMovimiento * new Vector2(Convert.ToSingle(Math.Cos(angulo)), Convert.ToSingle(Math.Sin(angulo))) * deltaTime);
-            if (!mapa.EsPared(siguientePosicion.X, siguientePosicion.Y))
-            {
-                posicion = siguientePosicion;
-            }
+            siguientePosicion += new Vector2(Convert.ToSingle(Math.Cos(angulo)), Convert.ToSingle(Math.Sin(angulo)));
         }
         if (keyboardState.IsKeyDown(Keys.S))
         {
-            Vector2 siguientePosicion = posicion + (velocidadDeMovimiento * new Vector2(Convert.ToSingle(-Math.Cos(angulo)), Convert.ToSingle(-Math.Sin(angulo))) * deltaTime);
-            if (!mapa.EsPared(siguientePosicion.X, siguientePosicion.Y))
-            {
-                posicion = siguientePosicion;
-            }
+            siguientePosicion += new Vector2(Convert.ToSingle(-Math.Cos(angulo)), Convert.ToSingle(-Math.Sin(angulo)));
         }
 
+        if (siguientePosicion != Vector2.Zero)
+        {
+            siguientePosicion.Normalize();
+            siguientePosicion = siguientePosicion * velocidadDeMovimiento * deltaTime;
+        }
+        
+        if (!mapa.EsPared(posicion.X + siguientePosicion.X, posicion.Y + siguientePosicion.Y))
+        {
+            posicion += siguientePosicion;
+        }
+
+        if (keyboardState.IsKeyDown(Keys.Left))
+        {
+            Rotar(deltaTime, -1);
+        }
+
+        if (keyboardState.IsKeyDown(Keys.Right))
+        {
+            Rotar(deltaTime);
+        }
     }
 
+    public void MoverseControl(float deltaTime, GamePadState gamePadState, Mapa mapa)
+    {
+        if (!gamePadState.IsConnected) { return; }
+
+        Vector2 siguientePosicion = new Vector2();
+
+        siguientePosicion = new Vector2(gamePadState.ThumbSticks.Left.X, gamePadState.ThumbSticks.Left.Y);
+
+        if (siguientePosicion != Vector2.Zero)
+        {
+            siguientePosicion.Normalize();
+            siguientePosicion = siguientePosicion * velocidadDeMovimiento * deltaTime;
+        }
+
+        if (!mapa.EsPared(posicion.X + siguientePosicion.X, posicion.Y + siguientePosicion.Y))
+        {
+            posicion += siguientePosicion;
+        }
+
+        if (Math.Abs(gamePadState.ThumbSticks.Right.X) >= 0.15)
+        {
+            Rotar(deltaTime, Math.Sign(gamePadState.ThumbSticks.Right.X), Math.Abs(gamePadState.ThumbSticks.Right.X));
+        }
+    }
     public override void SerializarObjetoCompleto(Message mensaje)
     {
         mensaje.Add(this.posicion.X);

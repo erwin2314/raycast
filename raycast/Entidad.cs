@@ -130,9 +130,11 @@ public class Entidad
         posicion.Y = mensaje.GetFloat();
     }
 
-    public void Rotar(float deltaTime, int rotarDerecha = 1) //1 = derecha, -1 = izquierda
+    public void Rotar(float deltaTime, int rotarDerecha = 1 , float escalaDeRotacion = 1f) //1 = derecha, -1 = izquierda
     {
-        angulo = angulo + (rotarDerecha * velociadDeRotacion) * deltaTime;
+        escalaDeRotacion = Math.Clamp(escalaDeRotacion, 0, 1);
+        
+        angulo = angulo + (rotarDerecha * velociadDeRotacion) * deltaTime * escalaDeRotacion;
         angulo %= MathF.Tau; // MathF.Tau es igual a 2π
     }
 

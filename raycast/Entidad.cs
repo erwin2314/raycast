@@ -105,6 +105,7 @@ public class Entidad
         mensaje.Add(this.alturaSprite);
         mensaje.Add(this.distanciaAJugador);
         mensaje.Add((float)this.posYEnum);
+        mensaje.Add(false);
 
     }
     public virtual void SerializarObjetoParcial(Message mensaje)
@@ -126,7 +127,7 @@ public class Entidad
             alturaSprite: mensaje.GetFloat(),
             distanciaAJugador: mensaje.GetFloat(),
             posYEnum: (PosYEnum)mensaje.GetFloat(),
-            existeEnLocal: false
+            existeEnLocal: mensaje.GetBool()
             );
     }
 

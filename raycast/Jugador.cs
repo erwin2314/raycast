@@ -124,6 +124,7 @@ public class Jugador : Entidad
         mensaje.Add(this.angulo);
         mensaje.Add(this.velocidadDeMovimiento);
         mensaje.Add((int)this.idTextura);
+        mensaje.Add(false);
     }
     public override void SerializarObjetoParcial(Message mensaje)
     {
@@ -142,7 +143,7 @@ public class Jugador : Entidad
             velocidadDeMovimiento: mensaje.GetFloat(),
             sprite: null,
             idTextura: (GestorTexturas.IdTextura)mensaje.GetInt(),
-            existeEnLocal: false
+            existeEnLocal: mensaje.GetBool()
             );
     }
 

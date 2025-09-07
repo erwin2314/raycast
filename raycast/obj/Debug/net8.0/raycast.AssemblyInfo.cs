@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("raycast")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1511ac69d22dabc0fae1d1c9153d4ba0c76d817b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ae9cf1b1a945b442d335ca6dd0ae89e28a7342a8")]
 [assembly: System.Reflection.AssemblyProductAttribute("raycast")]
 [assembly: System.Reflection.AssemblyTitleAttribute("raycast")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

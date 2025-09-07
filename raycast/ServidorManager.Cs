@@ -43,13 +43,7 @@ public class ServidorManger
     }
 
     public void EnClienteConectado(object sender, ServerConnectedEventArgs e)
-    {
-        if (!jugadores.ContainsKey(e.Client.Id))
-        {
-            Jugador jugador = new Jugador();
-            jugadores.Add(e.Client.Id, jugador);
-        }
-        
+    {   
         Message mensaje = Message.Create(MessageSendMode.Reliable, IdMensaje.PedirJugador);
         server.Send(mensaje, e.Client.Id);
     }
@@ -100,7 +94,7 @@ public class ServidorManger
     [MessageHandler((ushort)IdMensaje.MandarJugador)]
     public static void RecibirJugadorDeCliente(ushort fromClientId, Message mensaje)
     {
-        ServidorManger.instancia.jugadores[fromClientId] = ServidorManger.instancia.jugadores[fromClientId].DeserializarObjetoCompleto(mensaje);
+        ServidorManger.instancia.jugadores[fromClientId] = new Jugador(ServidorManger.instancia.jugadores[fromClientId].DeserializarObjetoCompleto(mensaje));
         ServidorManger.instancia.MandarACrearJugadores();
         ServidorManger.instancia.AñadirJugadoresARenderer();
     }

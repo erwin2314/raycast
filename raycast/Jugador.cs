@@ -37,6 +37,19 @@ public class Jugador : Entidad
 
     }
 
+    public Jugador(Jugador jugador)
+    {
+        new Jugador(posicion: jugador.posicion,
+        velociadDeRotacion: jugador.velociadDeRotacion,
+        campoDeVision: jugador.campoDeVision,
+        angulo: jugador.angulo,
+        velocidadDeMovimiento: jugador.velocidadDeMovimiento,
+        sprite: jugador.sprite,
+        idTextura: jugador.idTextura,
+        existeEnLocal: jugador.existeEnLocal
+        );
+    }
+
     public void Update(float deltaTime, KeyboardState keyboardState, GamePadState gamePadState, Mapa mapa)
     {
         MoverseTeclado(deltaTime, keyboardState, mapa);

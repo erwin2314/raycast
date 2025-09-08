@@ -37,7 +37,7 @@ public class Jugador : Entidad
 
     }
 
-    public Jugador(Jugador jugador)
+    public Jugador(Jugador jugador, bool boolExisteEnLocal)
     {
         new Jugador(posicion: jugador.posicion,
         velociadDeRotacion: jugador.velociadDeRotacion,

@@ -94,7 +94,7 @@ public class ServidorManger
     [MessageHandler((ushort)IdMensaje.MandarJugador)]
     public static void RecibirJugadorDeCliente(ushort fromClientId, Message mensaje)
     {
-        ServidorManger.instancia.jugadores[fromClientId] = new Jugador(ServidorManger.instancia.jugadores[fromClientId].DeserializarObjetoCompleto(mensaje));
+        ServidorManger.instancia.jugadores.Add(fromClientId, new Jugador(ServidorManger.instancia.jugadores[-1].DeserializarObjetoCompleto(mensaje), false));
         ServidorManger.instancia.MandarACrearJugadores();
         ServidorManger.instancia.AñadirJugadoresARenderer();
     }

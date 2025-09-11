@@ -13,7 +13,7 @@ public class Jugador : Entidad
         float velociadDeRotacion = 2f,
         float campoDeVision = 100,
         float angulo = 0,
-        float velocidadDeMovimiento = 2f,
+        float velocidadDeMovimiento = 4f,
         Texture2D sprite = null,
         GestorTexturas.IdTextura idTextura = GestorTexturas.IdTextura.placeHolder,
         bool existeEnLocal = true
@@ -34,19 +34,20 @@ public class Jugador : Entidad
             sprite = GestorTexturas.ObtenerTextura(idTextura);
         }
         this.sprite = sprite;
+        this.existeEnLocal = existeEnLocal;
 
     }
 
     public Jugador(Jugador jugador, bool boolExisteEnLocal)
     {
-        new Jugador(posicion: jugador.posicion,
-        velociadDeRotacion: jugador.velociadDeRotacion,
-        campoDeVision: jugador.campoDeVision,
-        angulo: jugador.angulo,
-        velocidadDeMovimiento: jugador.velocidadDeMovimiento,
-        sprite: jugador.sprite,
-        idTextura: jugador.idTextura,
-        existeEnLocal: jugador.existeEnLocal
+        new Jugador(this.posicion = jugador.posicion,
+        this.velociadDeRotacion = jugador.velociadDeRotacion,
+        this.campoDeVision = jugador.campoDeVision,
+        this.angulo = jugador.angulo,
+        this.velocidadDeMovimiento = jugador.velocidadDeMovimiento,
+        this.sprite = jugador.sprite,
+        this.idTextura = jugador.idTextura,
+        this.existeEnLocal = boolExisteEnLocal
         );
     }
 
@@ -137,7 +138,18 @@ public class Jugador : Entidad
         mensaje.Add(this.angulo);
         mensaje.Add(this.velocidadDeMovimiento);
         mensaje.Add((int)this.idTextura);
-        mensaje.Add(false);
+        mensaje.Add(this.existeEnLocal);
+    }
+    public void SerializarObjetoCompleto(Message mensaje, bool existeEnLocal)
+    {
+        mensaje.Add(this.posicion.X);
+        mensaje.Add(this.posicion.Y);
+        mensaje.Add(this.velociadDeRotacion);
+        mensaje.Add(this.campoDeVision);
+        mensaje.Add(this.angulo);
+        mensaje.Add(this.velocidadDeMovimiento);
+        mensaje.Add((int)this.idTextura);
+        mensaje.Add(existeEnLocal);
     }
     public override void SerializarObjetoParcial(Message mensaje)
     {

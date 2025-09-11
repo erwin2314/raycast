@@ -53,9 +53,8 @@ public class ClienteManager
     {
         foreach (KeyValuePair<int, Jugador> item in jugadores)
         {
-            if (!RayCastRenderer.instancia.listaEntidades.Contains(item.Value) || item.Value.existeEnLocal == false)
+            if (!RayCastRenderer.instancia.listaEntidades.Contains(item.Value) && item.Value.existeEnLocal == false)
             {
-                Console.WriteLine("se añadio una entidad" + item.Value.existeEnLocal);
                 RayCastRenderer.instancia.listaEntidades.Add(item.Value);
             }
         }
@@ -70,7 +69,7 @@ public class ClienteManager
         }
 
         Message _mensaje = Message.Create(MessageSendMode.Reliable, ServidorManger.IdMensaje.MandarJugador);
-        ClienteManager.instancia.jugadorLocal.SerializarObjetoCompleto(_mensaje);
+        ClienteManager.instancia.jugadorLocal.SerializarObjetoCompleto(_mensaje, false);
         ClienteManager.instancia.client.Send(_mensaje);
     }
 
@@ -78,6 +77,7 @@ public class ClienteManager
     public static void CrearJugadorDeServidor(Message mensaje)
     {
         int key = mensaje.GetInt();
+        
 
         if (!ClienteManager.instancia.jugadores.ContainsKey(key))
         {

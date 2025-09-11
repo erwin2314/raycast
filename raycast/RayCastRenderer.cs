@@ -42,27 +42,39 @@ public class RayCastRenderer
 
     public void DibujarFrame()
     {
-        float[] distancias = mapa.RayCastFov(jugador);
+        (float distancias, int IdTexturas, float wallx)[] distanciasIdTexturaWallx = mapa.RayCastFov(jugador);
+        float anchoRectangulo = anchoVentana / distanciasIdTexturaWallx.GetLength(0);
         float posicionY = 0;
         float posicionX = 0;
-        float anchoRectangulo = anchoVentana / distancias.GetLength(0);
         float alturaRectangulo = 0;
         float intensidad = 1;
         Color colorConIntensidad = Color.Blue * intensidad;
 
-        for (int i = 0; i < distancias.GetLength(0); i++)
+        for (int i = 0; i < distanciasIdTexturaWallx.GetLength(0); i++)
         {
+            var textura = GestorTexturas.ObtenerTextura(distanciasIdTexturaWallx[i].IdTexturas); // toma la textura de la pared
+            int columnaDeLatextura = (int)(distanciasIdTexturaWallx[i].wallx * textura.Width); // revisa en que parte de la textura esta la columna
+            Rectangle rectanguloDeTextura = new Rectangle(columnaDeLatextura, 0, 1, textura.Height); // crea el rectangulo con el tamaño de la textura
+
             posicionX = i * anchoRectangulo;
 
-            alturaRectangulo = alturaVentana / distancias[i];
+            alturaRectangulo = alturaVentana / distanciasIdTexturaWallx[i].distancias;
 
             posicionY = (alturaVentana - alturaRectangulo) / 2;
 
-            intensidad = 1f - (distancias[i] / 10);
-            intensidad = Math.Clamp(intensidad, 0.1f, 1f);
-            colorConIntensidad = Color.Blue * intensidad;
+            intensidad = 1f - (distanciasIdTexturaWallx[i].distancias / 10);
+            intensidad = Math.Clamp(intensidad, 0.01f, 1f);
+            colorConIntensidad = Color.White * intensidad;
 
-            spriteBatch.Draw(texture2D, new Rectangle((int)posicionX, (int)posicionY, (int)anchoRectangulo, (int)alturaRectangulo), colorConIntensidad);
+            if (distanciasIdTexturaWallx[i].IdTexturas == -1)
+            {
+                spriteBatch.Draw(texture2D, new Rectangle((int)posicionX, (int)posicionY, (int)anchoRectangulo, (int)alturaRectangulo), colorConIntensidad);
+            }
+            else
+            {
+                spriteBatch.Draw(textura,new Rectangle((int)posicionX, (int)posicionY, (int)anchoRectangulo, (int)alturaRectangulo),rectanguloDeTextura,colorConIntensidad);
+            }
+            
 
         }
 

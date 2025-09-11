@@ -105,7 +105,7 @@ public class Entidad
         mensaje.Add(this.alturaSprite);
         mensaje.Add(this.distanciaAJugador);
         mensaje.Add((float)this.posYEnum);
-        mensaje.Add(false);
+        mensaje.Add(existeEnLocal);
 
     }
     public virtual void SerializarObjetoParcial(Message mensaje)

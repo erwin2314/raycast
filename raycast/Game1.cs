@@ -53,8 +53,6 @@ public class Game1 : Game
     protected override void LoadContent()
     {
         
-
-        // TODO: use this.Content to load your game content here
     }
 
     protected override void Update(GameTime gameTime)
@@ -77,7 +75,7 @@ public class Game1 : Game
         }
         if (keyboardState.IsKeyDown(Keys.I) && !clienteManager.client.IsConnected)
         {
-            clienteManager.Conectarse("192.168.3.6:5000");
+            clienteManager.Conectarse("127.0.0.1:5000");
         }
 
 
@@ -97,9 +95,10 @@ public class Game1 : Game
 
     protected override void Draw(GameTime gameTime)
     {
-        GraphicsDevice.Clear(Color.CornflowerBlue);
+        GraphicsDevice.Clear(Color.DimGray);
 
         _spriteBatch.Begin();
+        //_spriteBatch.Draw(GestorTexturas.ObtenerTextura(0), new Rectangle(0, _graphics.PreferredBackBufferHeight/2, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight / 2), Color.Gray);
         rayCastRenderer.DibujarFrame();
         _spriteBatch.End();
 

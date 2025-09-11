@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Riptide;
 public class ServidorManger
 {
@@ -55,15 +56,13 @@ public class ServidorManger
 
     public void MandarACrearJugadores()
     {
-        
-        foreach (KeyValuePair<int, Jugador> item in jugadores)
+        foreach (KeyValuePair<int,Jugador> jugador in jugadores)
         {
             Message mensaje = Message.Create(MessageSendMode.Reliable, IdMensaje.CrearJugador);
-            mensaje.AddInt(item.Key);
-            item.Value.SerializarObjetoCompleto(mensaje);
-            server.SendToAll(mensaje);
+            mensaje.AddInt(jugador.Key);
+            jugador.Value.SerializarObjetoCompleto(mensaje,false);
+            server.SendToAll(mensaje, (ushort)jugador.Key);
         }
-        
     }
     
     public void MandarActualizarJugadores()
@@ -84,7 +83,7 @@ public class ServidorManger
 
         foreach (KeyValuePair<int, Jugador> item in jugadores)
         {
-            if (!RayCastRenderer.instancia.listaEntidades.Contains(item.Value))
+            if (!RayCastRenderer.instancia.listaEntidades.Contains(item.Value) && item.Value.existeEnLocal == false)
             {
                 RayCastRenderer.instancia.listaEntidades.Add(item.Value);
             }

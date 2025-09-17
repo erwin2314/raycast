@@ -13,7 +13,7 @@ public class Mapa
     )
     {
 
-        if (mapa_terreno == null) //por alguna razon que no entiendo del todo al momento de dibujarlo esta invertido
+        if (mapa_terreno == null)
         {
             this.mapa_terreno = new int[,] {
                 {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},

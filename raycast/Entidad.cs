@@ -19,6 +19,7 @@ public class Entidad
     public float distanciaAJugador;
     public PosYEnum posYEnum;
     public bool existeEnLocal;
+    public bool seDibujaComoBilldoard;
 
     public Entidad
     (
@@ -33,7 +34,8 @@ public class Entidad
         float alturaSprite = 256,
         float distanciaAJugador = 0,
         PosYEnum posYEnum = PosYEnum.centro,
-        bool existeEnLocal = true
+        bool existeEnLocal = true,
+        bool seDibujaComoBilldoard = true
     )
     {
         if (posicion == Vector2.Zero)
@@ -61,6 +63,7 @@ public class Entidad
         this.distanciaAJugador = distanciaAJugador;
         this.posYEnum = posYEnum;
         this.existeEnLocal = existeEnLocal;
+        this.seDibujaComoBilldoard = seDibujaComoBilldoard;
     }
 
     public Entidad
@@ -90,6 +93,7 @@ public class Entidad
         this.distanciaAJugador = entidad.distanciaAJugador;
         this.posYEnum = entidad.posYEnum;
         this.existeEnLocal = entidad.existeEnLocal;
+        this.seDibujaComoBilldoard = entidad.seDibujaComoBilldoard;
     }
 
     public virtual void SerializarObjetoCompleto(Message mensaje)

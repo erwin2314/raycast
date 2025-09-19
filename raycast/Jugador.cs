@@ -16,39 +16,34 @@ public class Jugador : Entidad
         float velocidadDeMovimiento = 4f,
         Texture2D sprite = null,
         GestorTexturas.IdTextura idTextura = GestorTexturas.IdTextura.placeHolder,
-        bool existeEnLocal = true
+        bool existeEnLocal = true,
+        bool seDibujaComoBilldoard = true
+    ) 
+    :base
+    (
+        posicion,
+        velociadDeRotacion,
+        campoDeVision,
+        angulo,
+        velocidadDeMovimiento,
+        sprite,
+        idTextura,
+        anchoSprite: 256,   // puedes ajustar según tu necesidad
+        alturaSprite: 256,
+        distanciaAJugador: 0,
+        posYEnum: PosYEnum.centro,
+        existeEnLocal: existeEnLocal,
+        seDibujaComoBilldoard: seDibujaComoBilldoard
     )
-    {
-        if (posicion == Vector2.Zero)
-        {
-            this.posicion = new Vector2(2, 2);
-        }
-
-        this.velociadDeRotacion = velociadDeRotacion;
-        this.campoDeVision = MathHelper.ToRadians(campoDeVision);
-        this.angulo = MathHelper.ToRadians(angulo);
-        this.velocidadDeMovimiento = velocidadDeMovimiento;
-        this.idTextura = idTextura;
-        if (sprite == null)
-        {
-            sprite = GestorTexturas.ObtenerTextura(idTextura);
-        }
-        this.sprite = sprite;
-        this.existeEnLocal = existeEnLocal;
-
-    }
+    {}
 
     public Jugador(Jugador jugador, bool boolExisteEnLocal)
+    : base
+    (
+        jugador
+    )
     {
-        new Jugador(this.posicion = jugador.posicion,
-        this.velociadDeRotacion = jugador.velociadDeRotacion,
-        this.campoDeVision = jugador.campoDeVision,
-        this.angulo = jugador.angulo,
-        this.velocidadDeMovimiento = jugador.velocidadDeMovimiento,
-        this.sprite = jugador.sprite,
-        this.idTextura = jugador.idTextura,
-        this.existeEnLocal = boolExisteEnLocal
-        );
+        this.seDibujaComoBilldoard = boolExisteEnLocal;
     }
 
     public void Update(float deltaTime, KeyboardState keyboardState, GamePadState gamePadState, Mapa mapa)

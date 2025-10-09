@@ -43,7 +43,7 @@ public class ClienteManager
     {
         if (jugadorLocal != null)
         {
-            Message mensaje = Message.Create(MessageSendMode.Unreliable, ServidorManger.IdMensaje.ActualizarJugador);
+            Message mensaje = Message.Create(MessageSendMode.Unreliable, ServidorManager.IdMensaje.ActualizarJugador);
             jugadorLocal.SerializarObjetoParcial(mensaje);
             client.Send(mensaje);
         }
@@ -60,7 +60,7 @@ public class ClienteManager
         }
     }
 
-    [MessageHandler((ushort)ServidorManger.IdMensaje.PedirJugador)]
+    [MessageHandler((ushort)ServidorManager.IdMensaje.PedirJugador)]
     public static void MandarJugadorAlServidor(Message mensaje)
     {
         if (ClienteManager.instancia.jugadorLocal == null)
@@ -68,12 +68,12 @@ public class ClienteManager
             return;
         }
 
-        Message _mensaje = Message.Create(MessageSendMode.Reliable, ServidorManger.IdMensaje.MandarJugador);
+        Message _mensaje = Message.Create(MessageSendMode.Reliable, ServidorManager.IdMensaje.MandarJugador);
         ClienteManager.instancia.jugadorLocal.SerializarObjetoCompleto(_mensaje, false);
         ClienteManager.instancia.client.Send(_mensaje);
     }
 
-    [MessageHandler((ushort)ServidorManger.IdMensaje.CrearJugador)]
+    [MessageHandler((ushort)ServidorManager.IdMensaje.CrearJugador)]
     public static void CrearJugadorDeServidor(Message mensaje)
     {
         int key = mensaje.GetInt();
@@ -87,7 +87,7 @@ public class ClienteManager
         }
     }
 
-    [MessageHandler((ushort)ServidorManger.IdMensaje.ActualizarJugadorServidor)]
+    [MessageHandler((ushort)ServidorManager.IdMensaje.ActualizarJugadorServidor)]
     public static void ActualizarJugadoresServidor(Message mensaje)
     {
         int key = mensaje.GetInt();

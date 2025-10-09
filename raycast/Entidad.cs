@@ -8,7 +8,7 @@ using Riptide;
 public class Entidad
 {
     public Vector2 posicion;
-    public float velociadDeRotacion;
+    public float velocidadDeRotacion;
     public float campoDeVision;
     public float angulo;
     public float velocidadDeMovimiento;
@@ -24,7 +24,7 @@ public class Entidad
     public Entidad
     (
         Vector2 posicion = new Vector2(),
-        float velociadDeRotacion = 1f,
+        float velocidadDeRotacion = 1f,
         float campoDeVision = 90,
         float angulo = 0,
         float velocidadDeMovimiento = 1,
@@ -47,7 +47,7 @@ public class Entidad
             this.posicion = posicion;
         }
 
-        this.velociadDeRotacion = velociadDeRotacion;
+        this.velocidadDeRotacion = velocidadDeRotacion;
         this.campoDeVision = MathHelper.ToRadians(campoDeVision);
         this.angulo = MathHelper.ToRadians(angulo);
         this.velocidadDeMovimiento = velocidadDeMovimiento;
@@ -80,7 +80,7 @@ public class Entidad
             this.posicion = entidad.posicion;
         }
 
-        this.velociadDeRotacion = entidad.velociadDeRotacion;
+        this.velocidadDeRotacion = entidad.velocidadDeRotacion;
         this.campoDeVision = MathHelper.ToRadians(entidad.campoDeVision);
         this.angulo = MathHelper.ToRadians(entidad.angulo);
         this.velocidadDeMovimiento = entidad.velocidadDeMovimiento;
@@ -100,7 +100,7 @@ public class Entidad
     {
         mensaje.Add(this.posicion.X);
         mensaje.Add(this.posicion.Y);
-        mensaje.Add(this.velociadDeRotacion);
+        mensaje.Add(this.velocidadDeRotacion);
         mensaje.Add(this.campoDeVision);
         mensaje.Add(this.angulo);
         mensaje.Add(this.velocidadDeMovimiento);
@@ -122,7 +122,7 @@ public class Entidad
     {
         return new Entidad(
             new Vector2(mensaje.GetFloat(), mensaje.GetFloat()),
-            velociadDeRotacion: mensaje.GetFloat(),
+            velocidadDeRotacion: mensaje.GetFloat(),
             campoDeVision: mensaje.GetFloat(),
             angulo: mensaje.GetFloat(),
             velocidadDeMovimiento: mensaje.GetFloat(),
@@ -145,7 +145,7 @@ public class Entidad
     {
         escalaDeRotacion = Math.Clamp(escalaDeRotacion, 0, 1);
         
-        angulo = angulo + (rotarDerecha * velociadDeRotacion) * deltaTime * escalaDeRotacion;
+        angulo = angulo + (rotarDerecha * velocidadDeRotacion) * deltaTime * escalaDeRotacion;
         angulo %= MathF.Tau; // MathF.Tau es igual a 2π
     }
 

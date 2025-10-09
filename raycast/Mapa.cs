@@ -194,7 +194,7 @@ public class Mapa
 
     }
 
-    public (float distancia, int idPared, float wallx)[] RayCastFov(Jugador jugador, int resolucion = 640, float distanciaMaxima = 10f)
+    public (float distancia, int idPared, float wallx)[] RayCastFov(Jugador jugador, int resolucion = 1280, float distanciaMaxima = 10f)
     {
         float anguloMinimo = jugador.angulo - (jugador.campoDeVision / 2);
         float anguloActual = anguloMinimo;

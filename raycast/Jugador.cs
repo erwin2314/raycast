@@ -10,7 +10,7 @@ public class Jugador : Entidad
     public Jugador
     (
         Vector2 posicion = new Vector2(),
-        float velociadDeRotacion = 2f,
+        float velocidadDeRotacion = 2f,
         float campoDeVision = 100,
         float angulo = 0,
         float velocidadDeMovimiento = 4f,
@@ -22,7 +22,7 @@ public class Jugador : Entidad
     :base
     (
         posicion,
-        velociadDeRotacion,
+        velocidadDeRotacion,
         campoDeVision,
         angulo,
         velocidadDeMovimiento,
@@ -128,7 +128,7 @@ public class Jugador : Entidad
     {
         mensaje.Add(this.posicion.X);
         mensaje.Add(this.posicion.Y);
-        mensaje.Add(this.velociadDeRotacion);
+        mensaje.Add(this.velocidadDeRotacion);
         mensaje.Add(this.campoDeVision);
         mensaje.Add(this.angulo);
         mensaje.Add(this.velocidadDeMovimiento);
@@ -139,7 +139,7 @@ public class Jugador : Entidad
     {
         mensaje.Add(this.posicion.X);
         mensaje.Add(this.posicion.Y);
-        mensaje.Add(this.velociadDeRotacion);
+        mensaje.Add(this.velocidadDeRotacion);
         mensaje.Add(this.campoDeVision);
         mensaje.Add(this.angulo);
         mensaje.Add(this.velocidadDeMovimiento);
@@ -157,7 +157,7 @@ public class Jugador : Entidad
     {
         return new Jugador(
             new Vector2(mensaje.GetFloat(), mensaje.GetFloat()),
-            velociadDeRotacion: mensaje.GetFloat(),
+            velocidadDeRotacion: mensaje.GetFloat(),
             campoDeVision: mensaje.GetFloat(),
             angulo: mensaje.GetFloat(),
             velocidadDeMovimiento: mensaje.GetFloat(),

@@ -19,7 +19,7 @@ public class Game1 : Game
     public GamePadState gamePadState;
     public List<Entidad> listaEntidades;
     public Entidad entidadPrueba;
-    public ServidorManger servidorManger;
+    public ServidorManager servidorManager;
     public ClienteManager clienteManager;
 
     public Game1()
@@ -44,7 +44,7 @@ public class Game1 : Game
 
         rayCastRenderer.listaEntidades.Add(jugador);
 
-        servidorManger = new ServidorManger(jugador);
+        servidorManager = new ServidorManager(jugador);
         clienteManager = new ClienteManager(jugador);
 
         base.Initialize();
@@ -60,7 +60,7 @@ public class Game1 : Game
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
 
-        servidorManger.Update();
+        servidorManager.Update();
         clienteManager.Update();
 
 
@@ -69,9 +69,9 @@ public class Game1 : Game
 
         jugador.Update((float)gameTime.ElapsedGameTime.TotalSeconds, keyboardState, gamePadState, mapa);
 
-        if (keyboardState.IsKeyDown(Keys.U) && !servidorManger.server.IsRunning)
+        if (keyboardState.IsKeyDown(Keys.U) && !servidorManager.server.IsRunning)
         {
-            servidorManger.Iniciar(5000, 10);
+            servidorManager.Iniciar(5000, 10);
         }
         if (keyboardState.IsKeyDown(Keys.I) && !clienteManager.client.IsConnected)
         {
@@ -80,9 +80,9 @@ public class Game1 : Game
 
 
 
-        if (servidorManger.server.IsRunning)
+        if (servidorManager.server.IsRunning)
         {
-            servidorManger.MandarActualizarJugadores();
+            servidorManager.MandarActualizarJugadores();
         }
 
         if (clienteManager.client.IsConnected)

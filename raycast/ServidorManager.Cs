@@ -2,13 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Riptide;
-public class ServidorManger
+public class ServidorManager
 {
-    public static ServidorManger instancia; //para referirse al objeto desde funciones estaticas se utiliza esta variable
+    public static ServidorManager instancia; //para referirse al objeto desde funciones estaticas se utiliza esta variable
     public Server server;
     public Jugador jugadorLocal;
     public Dictionary<int, Jugador> jugadores;
-    public ServidorManger(Jugador jugadorLocal = null)
+    public ServidorManager(Jugador jugadorLocal = null)
     {
         this.jugadorLocal = jugadorLocal;
         instancia = this;
@@ -93,16 +93,16 @@ public class ServidorManger
     [MessageHandler((ushort)IdMensaje.MandarJugador)]
     public static void RecibirJugadorDeCliente(ushort fromClientId, Message mensaje)
     {
-        ServidorManger.instancia.jugadores.Add(fromClientId, new Jugador(ServidorManger.instancia.jugadores[-1].DeserializarObjetoCompleto(mensaje), false));
-        ServidorManger.instancia.MandarACrearJugadores();
-        ServidorManger.instancia.AñadirJugadoresARenderer();
+        ServidorManager.instancia.jugadores.Add(fromClientId, new Jugador(ServidorManager.instancia.jugadores[-1].DeserializarObjetoCompleto(mensaje), false));
+        ServidorManager.instancia.MandarACrearJugadores();
+        ServidorManager.instancia.AñadirJugadoresARenderer();
     }
     [MessageHandler((ushort)IdMensaje.ActualizarJugador)]
     public static void ActualizarJugadorCliente(ushort fromClientId, Message mensaje)
     {
-        if (ServidorManger.instancia.jugadores.ContainsKey(fromClientId))
+        if (ServidorManager.instancia.jugadores.ContainsKey(fromClientId))
         {
-            ServidorManger.instancia.jugadores[fromClientId].DeserializarObjetoParcial(mensaje);
+            ServidorManager.instancia.jugadores[fromClientId].DeserializarObjetoParcial(mensaje);
         }
         
     }

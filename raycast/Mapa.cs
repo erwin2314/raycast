@@ -39,7 +39,7 @@ public class Mapa
         }
         if (diccionarioTexturas == null)
         {
-            diccionarioTexturas = new Dictionary<int, GestorTexturas.IdTextura>()
+            this.diccionarioTexturas = new Dictionary<int, GestorTexturas.IdTextura>()
             {
                 {0,GestorTexturas.IdTextura.vacio},
                 {1,GestorTexturas.IdTextura.paredPrueba}
@@ -99,7 +99,7 @@ public class Mapa
         bool hit = false;
         int side = 0; // 0 = cruzamos una línea vertical, 1 = cruzamos una línea horizontal
         int pasos = 0;
-        int idPared = -1;
+        int idPared = 0;
         float wallx = 0; //indica en que parte de la pared/celda el rayo golpeo
 
         while (!hit && pasos < 50) // Limitamos pasos para el ejemplo

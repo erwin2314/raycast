@@ -42,8 +42,6 @@ public class Game1 : Game
         listaEntidades = new List<Entidad>();
         rayCastRenderer = new RayCastRenderer(_spriteBatch, jugador, _graphics.PreferredBackBufferHeight, _graphics.PreferredBackBufferWidth, mapa, listaEntidades);
 
-        rayCastRenderer.listaEntidades.Add(jugador);
-
         servidorManager = new ServidorManager(jugador);
         clienteManager = new ClienteManager(jugador);
 

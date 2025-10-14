@@ -28,7 +28,7 @@ public class Jugador : Entidad
         velocidadDeMovimiento,
         sprite,
         idTextura,
-        anchoSprite: 256,   // puedes ajustar según tu necesidad
+        anchoSprite: 256,  
         alturaSprite: 256,
         distanciaAJugador: 0,
         posYEnum: PosYEnum.centro,

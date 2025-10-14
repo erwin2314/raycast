@@ -15,6 +15,7 @@ public class RayCastRenderer
     public Texture2D texture2D;
     public Mapa mapa;
     public List<Entidad> listaEntidades;
+    public float[] paredesConDistancias;
 
     public RayCastRenderer
     (
@@ -32,6 +33,7 @@ public class RayCastRenderer
         this.anchoVentana = anchoVentana;
         this.mapa = mapa;
         this.listaEntidades = listaEntidades;
+        this.paredesConDistancias = new float[anchoVentana];
         instancia = this;
 
         texture2D = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
@@ -52,7 +54,8 @@ public class RayCastRenderer
 
         for (int i = 0; i < distanciasIdTexturaWallx.GetLength(0); i++)
         {
-            var textura = GestorTexturas.ObtenerTextura(distanciasIdTexturaWallx[i].IdTexturas); // toma la textura de la pared
+            paredesConDistancias[i] = distanciasIdTexturaWallx[i].distancias;
+            var textura = GestorTexturas.ObtenerTextura(mapa.diccionarioTexturas[distanciasIdTexturaWallx[i].IdTexturas]); // toma la textura de la pared
             int columnaDeLatextura = (int)(distanciasIdTexturaWallx[i].wallx * textura.Width); // revisa en que parte de la textura esta la columna
             Rectangle rectanguloDeTextura = new Rectangle(columnaDeLatextura, 0, 1, textura.Height); // crea el rectangulo con el pedazo de la textura
 
@@ -83,15 +86,26 @@ public class RayCastRenderer
 
     public void DibujarSprites()
     {
-        float anguloRelativoAlJugador = 0; // es el resultado de restar el angulo del jugador al angulo absoluto, este representa el angulo entre jugador-entidad teniendo en cuenta tambien el angulo del jugador
-        Vector2 vectorDeDireccionJugadorAEntidad; // es el vector resultante de restar la posicion de la entidad y del jugador, este vector apunta del jugador a la entidad
-        float anguloAbsoluto = 0; //es el angulo absoluto en el plano del mundo entre el jugador y una entidad
-        float _alturaSprite = 0; //la altura que se utiliza al momento de dibujar el sprite de una entidad
-        float _anchoSprite = 0; //el ancho que se utiliza al momento de dibujar el sprite de una entidad
-        float posX = 0; // posicion x en que se dibuja el sprite
-        float intensidad = 1f; // intensidad del color/sprite al momento de dibujarlo
+        if (listaEntidades.Count <= 0)
+        {
+            return;
+        }
 
-        foreach (Entidad entidad in listaEntidades)
+        Vector2 vectorRelativo; //angulo relativo de la entidad y el jugador
+        float anguloSprite = 0; //angulo de donde esta el sprite con respecto a donde mira el jugador (centro de la pantalla)
+        float posicionRelativa = 0; //es la posicion en la pantalla
+        float alturaSprite = 0;
+        float anchoSprite = 0;
+        float columnaCentro = 0; //posicion en la pantalla de la columna central
+        float columnaInicio = 0;//posicion en la pantalla de la columna inicial
+        float columnaFinal = 0;//posicion en la pantalla de la columna final
+        float progresoEnTextura = 0;//indica en que parte de la textura una columna esta va de 0 a 1
+        int pixelEnTextura = 0;// de izquierda a derecha indica en que pixel se encuentra
+        int posicionY = 0; // posicion vertical del sprite al momento de dibujarse
+        Rectangle rectanguloOrigen; // indica que parte de la textura se va a dibujar
+        Rectangle rectanguloDestino; // indica en donde se va a dibujar en pantalla
+
+        foreach(Entidad entidad in listaEntidades)
         {
             entidad.distanciaAJugador = Vector2.Distance(entidad.posicion, jugador.posicion);
             //calcula la distancia de cada entidad al jugador
@@ -100,53 +114,49 @@ public class RayCastRenderer
         listaEntidades = listaEntidades.OrderByDescending(x => x.distanciaAJugador).ToList<Entidad>();
         //ordena la lista de entidades segun su distancia por orden descendente (mas grande va primero)
 
-        foreach (Entidad entidad in listaEntidades)
+        foreach(Entidad entidad in listaEntidades)
         {
+            vectorRelativo = entidad.posicion - jugador.posicion;
+            anguloSprite = Convert.ToSingle(Math.Atan2(vectorRelativo.Y, vectorRelativo.X)) - jugador.angulo;
 
-            vectorDeDireccionJugadorAEntidad = entidad.posicion - jugador.posicion;
-            anguloAbsoluto = MathF.Atan2(vectorDeDireccionJugadorAEntidad.Y, vectorDeDireccionJugadorAEntidad.X);
+            //Normalizar entre -Pi y Pi
+            while (anguloSprite < -Math.PI) anguloSprite += 2 * (Single)Math.PI;
+            while (anguloSprite > Math.PI) anguloSprite -= 2 * (Single)Math.PI;
 
-            anguloRelativoAlJugador = anguloAbsoluto - jugador.angulo;
+            //el resultado va a resultar en un rango de (0 a 1)
+            posicionRelativa = (anguloSprite / jugador.campoDeVision) + 0.5f;
 
-            while (anguloRelativoAlJugador > MathF.PI) anguloRelativoAlJugador -= MathF.Tau; // mantiene el angulo relativo al jugador entre 2pi y -2pi
-            while (anguloRelativoAlJugador < -MathF.PI) anguloRelativoAlJugador += MathF.Tau;
+            alturaSprite = entidad.alturaSprite / entidad.distanciaAJugador;
+            anchoSprite = entidad.anchoSprite  / entidad.distanciaAJugador;
 
-            // comprobación para ver su una entidad se dibuja
-            //primero revisa su el angulo relativo se encuentra dentro del angulo de visión y que la distancia de la entidad al jugador este entre 10 y 0.1
-            if (anguloRelativoAlJugador >= -(jugador.campoDeVision / 2) && anguloRelativoAlJugador <= (jugador.campoDeVision / 2) && entidad.distanciaAJugador <= 10f && entidad.distanciaAJugador > 0.1f)
+            columnaCentro = posicionRelativa * anchoVentana;
+            columnaInicio = columnaCentro - (anchoSprite / 2);
+            columnaFinal = columnaCentro + (anchoSprite / 2);
+
+            if(columnaFinal < 0 || columnaInicio > anchoVentana)
             {
-                // lanza un rayCast a la entidad para ver si hay una pared en el camino
-                if (mapa.RayCast(jugador.posicion, entidad.posicion))
+                return;
+            }
+            
+            for (int i = (int)columnaInicio; i < columnaFinal;i++)
+            {
+
+                if (i > -1 && i < anchoVentana && paredesConDistancias[i] > entidad.distanciaAJugador)
                 {
-                    // la altura con la que se dibuja el sprite es una relacion inversa de la altura base del sprite 
-                    // entre la distancia divididad entre la altura de la ventana multiplicada con una constante
-                    _alturaSprite = entidad.alturaSprite / ((entidad.distanciaAJugador / alturaVentana) * 720f);
+                    progresoEnTextura = (i - columnaInicio) / (columnaFinal - columnaInicio);
+                    // se multiplica por el ancho de la imagen para obtener el pixel correcto
+                    pixelEnTextura = (int)(progresoEnTextura * entidad.sprite.Width);
+                    pixelEnTextura = Math.Clamp(pixelEnTextura, 0, entidad.sprite.Width - 1);
 
-                    // el ancho es una relación inversa entre el ancho base entre la distancia al jugador
-                    _anchoSprite = entidad.anchoSprite / entidad.distanciaAJugador;
+                    posicionY = (int)((alturaVentana / 2f) + (int)entidad.posYEnum - (alturaSprite/2));
+                    rectanguloOrigen = new Rectangle(pixelEnTextura, 0, 1, entidad.sprite.Height);
+                    rectanguloDestino = new Rectangle(i, posicionY, 1, (int)alturaSprite);
 
-                    // esto indica el offset vertical al dibujar un sprite para que tenga una "altura" constante
-                    // se calcula con una relación inversa de la altura base entre
-                    // la distancia al jugador dividido por la altura de la ventana multiplicado por una constante
-                    float offsetYEscalado = (float)entidad.posYEnum / ((entidad.distanciaAJugador / alturaVentana) * 720f);
-
-                    // la posicion x en donde se dibuja
-                    // Calcula la posición X en pantalla del sprite según el ángulo relativo al jugador.
-                    // Normaliza el ángulo al rango (lo normaliza a [0, campoDeVision] ), lo convierte a una proporción de pantalla,
-                    // y centra el sprite restando la mitad de su ancho.
-                    posX = ((anguloRelativoAlJugador + jugador.campoDeVision / 2) / jugador.campoDeVision * anchoVentana) - (_anchoSprite / 2);
-                    float posY = ((alturaVentana / 2) - (_alturaSprite / 2) - offsetYEscalado);
-
-                    intensidad = (1f / entidad.distanciaAJugador) * 3.5f;
-                    intensidad = Math.Clamp(intensidad, 0.01f, 1f);
-
-                    Color colorConIntensidad = Color.White * intensidad;
-
-                    spriteBatch.Draw(entidad.sprite, new Rectangle((int)posX, (int)posY, (int)_anchoSprite, (int)_alturaSprite), colorConIntensidad);
+                    spriteBatch.Draw(entidad.sprite, rectanguloDestino, rectanguloOrigen, Color.White);
                 }
 
             }
-
+            
         }
 
     }

@@ -96,7 +96,7 @@ public class Entidad
         this.seDibujaComoBilldoard = entidad.seDibujaComoBilldoard;
     }
 
-    public virtual void SerializarObjetoCompleto(Message mensaje)
+    public virtual void SerializarObjetoCompleto(Message mensaje, bool existeEnLocalTemp = false)
     {
         mensaje.Add(this.posicion.X);
         mensaje.Add(this.posicion.Y);
@@ -109,7 +109,7 @@ public class Entidad
         mensaje.Add(this.alturaSprite);
         mensaje.Add(this.distanciaAJugador);
         mensaje.Add((float)this.posYEnum);
-        mensaje.Add(existeEnLocal);
+        mensaje.Add(existeEnLocalTemp);
 
     }
     public virtual void SerializarObjetoParcial(Message mensaje)

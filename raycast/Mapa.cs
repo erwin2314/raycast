@@ -5,6 +5,7 @@ public class Mapa
 {
     public int[,] mapa_terreno;
     public Dictionary<int, GestorTexturas.IdTextura> diccionarioTexturas;
+    public List<Proyectil> listaProyectiles;
 
     public Mapa
     (
@@ -16,7 +17,7 @@ public class Mapa
         if (mapa_terreno == null)
         {
             this.mapa_terreno = new int[,] {
-                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+                {1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
                 {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
                 {1,0,0,0,0,0,0,0,0,1,1,0,0,0,1,1,0,0,0,1},
                 {1,1,1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,0,0,1},
@@ -42,7 +43,8 @@ public class Mapa
             this.diccionarioTexturas = new Dictionary<int, GestorTexturas.IdTextura>()
             {
                 {0,GestorTexturas.IdTextura.vacio},
-                {1,GestorTexturas.IdTextura.paredPrueba}
+                {1,GestorTexturas.IdTextura.paredLadrillos},
+                {2,GestorTexturas.IdTextura.paredPrueba}
             };
         }
         else
@@ -171,7 +173,7 @@ public class Mapa
 
     //la posicion es del jugador
     //hitDistance es la distancia que se utiliza para comprobar si el raycast da al objetivo
-    public bool RayCast(Vector2 posicion, Vector2 objetivo, float tamañoPaso = 0.005f, float distanciaMaxima = 10f, float hitDistance = 0.05f)
+    public bool RayCast(Vector2 posicion, Vector2 objetivo, float tamañoPaso = 0.005f, float distanciaMaxima = 20f, float hitDistance = 0.05f)
     {
         Vector2 anguloVector = objetivo - posicion;
         Vector2 posicionRayo = posicion;
@@ -194,7 +196,7 @@ public class Mapa
 
     }
 
-    public (float distancia, int idPared, float wallx)[] RayCastFov(Jugador jugador, int resolucion = 1280, float distanciaMaxima = 10f)
+    public (float distancia, int idPared, float wallx)[] RayCastFov(Jugador jugador, int resolucion = 1280, float distanciaMaxima = 20f)
     {
         float anguloMinimo = jugador.angulo - (jugador.campoDeVision / 2);
         float anguloActual = anguloMinimo;
@@ -204,7 +206,7 @@ public class Mapa
 
         for (int i = 0; i < resolucion; i++)
         {
-            distanciasIdTexturaWallX[i] = RayCast(jugador.posicion, anguloActual);
+            distanciasIdTexturaWallX[i] = RayCast(jugador.posicion, anguloActual, distanciaMaxima);
 
             anguloActual += pasoAngulo;
         }
@@ -217,7 +219,7 @@ public class Mapa
     {
         try
         {
-            if (mapa_terreno[(int)y, (int)x] == 1)
+            if (mapa_terreno[(int)y, (int)x] != 0)
             {
                 return true;
             }

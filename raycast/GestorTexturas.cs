@@ -56,7 +56,8 @@ public static class GestorTexturas
         jugador9 = 9,
         jugador10 = 10,
         //Paredes 100 - 110
-        paredPrueba = 100
+        paredLadrillos = 100,
+        paredPrueba = 101
 
     }
 }

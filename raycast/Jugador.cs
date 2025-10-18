@@ -43,7 +43,15 @@ public class Jugador : Entidad
         jugador
     )
     {
-        this.seDibujaComoBilldoard = boolExisteEnLocal;
+        this.existeEnLocal = boolExisteEnLocal;
+    }
+
+    public Jugador(Entidad entidad, bool boolExisteEnLocal)
+    :base(
+        entidad
+    )
+    {
+        this.existeEnLocal = boolExisteEnLocal;
     }
 
     public void Update(float deltaTime, KeyboardState keyboardState, GamePadState gamePadState, Mapa mapa)
@@ -124,54 +132,25 @@ public class Jugador : Entidad
             Rotar(deltaTime, Math.Sign(gamePadState.ThumbSticks.Right.X), Math.Abs(gamePadState.ThumbSticks.Right.X));
         }
     }
-    public override void SerializarObjetoCompleto(Message mensaje)
+    public override void SerializarObjetoCompleto(Message mensaje, bool existeEnLocal = false)
     {
-        mensaje.Add(this.posicion.X);
-        mensaje.Add(this.posicion.Y);
-        mensaje.Add(this.velocidadDeRotacion);
-        mensaje.Add(this.campoDeVision);
-        mensaje.Add(this.angulo);
-        mensaje.Add(this.velocidadDeMovimiento);
-        mensaje.Add((int)this.idTextura);
-        mensaje.Add(this.existeEnLocal);
-    }
-    public void SerializarObjetoCompleto(Message mensaje, bool existeEnLocal)
-    {
-        mensaje.Add(this.posicion.X);
-        mensaje.Add(this.posicion.Y);
-        mensaje.Add(this.velocidadDeRotacion);
-        mensaje.Add(this.campoDeVision);
-        mensaje.Add(this.angulo);
-        mensaje.Add(this.velocidadDeMovimiento);
-        mensaje.Add((int)this.idTextura);
-        mensaje.Add(existeEnLocal);
+        base.SerializarObjetoCompleto(mensaje, existeEnLocal);
     }
     public override void SerializarObjetoParcial(Message mensaje)
     {
-        mensaje.Add(this.posicion.X);
-        mensaje.Add(this.posicion.Y);
-        mensaje.Add(this.angulo);
+        base.SerializarObjetoParcial(mensaje);
     }
 
     public override Jugador DeserializarObjetoCompleto(Message mensaje)
     {
-        return new Jugador(
-            new Vector2(mensaje.GetFloat(), mensaje.GetFloat()),
-            velocidadDeRotacion: mensaje.GetFloat(),
-            campoDeVision: mensaje.GetFloat(),
-            angulo: mensaje.GetFloat(),
-            velocidadDeMovimiento: mensaje.GetFloat(),
-            sprite: null,
-            idTextura: (GestorTexturas.IdTextura)mensaje.GetInt(),
-            existeEnLocal: mensaje.GetBool()
-            );
+        Jugador jugadorADevolver = new Jugador(base.DeserializarObjetoCompleto(mensaje),false);
+        jugadorADevolver.existeEnLocal = false;
+        return jugadorADevolver;
     }
 
     public override void DeserializarObjetoParcial(Message mensaje)
     {
-        posicion.X = mensaje.GetFloat();
-        posicion.Y = mensaje.GetFloat();
-        angulo = mensaje.GetFloat(); 
+        base.DeserializarObjetoParcial(mensaje);
     }
     
 }

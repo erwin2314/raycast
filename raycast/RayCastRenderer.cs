@@ -65,7 +65,7 @@ public class RayCastRenderer
 
             posicionY = (alturaVentana - alturaRectangulo) / 2;
 
-            intensidad = 1f - (distanciasIdTexturaWallx[i].distancias / 10);
+            intensidad = 1f - (distanciasIdTexturaWallx[i].distancias / 20);
             intensidad = Math.Clamp(intensidad, 0.01f, 1f);
             colorConIntensidad = Color.White * intensidad;
 

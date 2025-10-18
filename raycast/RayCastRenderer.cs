@@ -104,6 +104,7 @@ public class RayCastRenderer
         int posicionY = 0; // posicion vertical del sprite al momento de dibujarse
         Rectangle rectanguloOrigen; // indica que parte de la textura se va a dibujar
         Rectangle rectanguloDestino; // indica en donde se va a dibujar en pantalla
+        float intensidad = 1f; 
 
         foreach(Entidad entidad in listaEntidades)
         {
@@ -132,6 +133,8 @@ public class RayCastRenderer
             columnaCentro = posicionRelativa * anchoVentana;
             columnaInicio = columnaCentro - (anchoSprite / 2);
             columnaFinal = columnaCentro + (anchoSprite / 2);
+            intensidad = 6f / entidad.distanciaAJugador;
+            intensidad = Math.Clamp(intensidad, 0.001f, 1f);
 
             if(columnaFinal < 0 || columnaInicio > anchoVentana)
             {
@@ -152,7 +155,7 @@ public class RayCastRenderer
                     rectanguloOrigen = new Rectangle(pixelEnTextura, 0, 1, entidad.sprite.Height);
                     rectanguloDestino = new Rectangle(i, posicionY, 1, (int)alturaSprite);
 
-                    spriteBatch.Draw(entidad.sprite, rectanguloDestino, rectanguloOrigen, Color.White);
+                    spriteBatch.Draw(entidad.sprite, rectanguloDestino, rectanguloOrigen, Color.White * intensidad);
                 }
 
             }

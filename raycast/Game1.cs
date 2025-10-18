@@ -60,7 +60,7 @@ public class Game1 : Game
 
         servidorManager.Update();
         clienteManager.Update();
-
+        mapa.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
 
         keyboardState = Keyboard.GetState();
         gamePadState = GamePad.GetState(0);

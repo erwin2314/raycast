@@ -7,6 +7,9 @@ using Riptide;
 
 public class Jugador : Entidad
 {
+    public float vidaActual;
+    public float vidaMaxima;
+    public int vecesDisparadas = 0;
     public Jugador
     (
         Vector2 posicion = new Vector2(),
@@ -17,7 +20,8 @@ public class Jugador : Entidad
         Texture2D sprite = null,
         GestorTexturas.IdTextura idTextura = GestorTexturas.IdTextura.placeHolder,
         bool existeEnLocal = true,
-        bool seDibujaComoBilldoard = true
+        bool seDibujaComoBilldoard = true,
+        float vidaMaxima = 5
     ) 
     :base
     (
@@ -28,14 +32,14 @@ public class Jugador : Entidad
         velocidadDeMovimiento,
         sprite,
         idTextura,
-        anchoSprite: 256,  
-        alturaSprite: 256,
-        distanciaAJugador: 0,
-        posYEnum: PosYEnum.centro,
         existeEnLocal: existeEnLocal,
         seDibujaComoBilldoard: seDibujaComoBilldoard
     )
-    {}
+    {
+        this.vidaMaxima = vidaMaxima;
+        this.vidaActual = this.vidaMaxima;
+        this.vecesDisparadas = 0;
+    }
 
     public Jugador(Jugador jugador, bool boolExisteEnLocal)
     : base
@@ -44,20 +48,25 @@ public class Jugador : Entidad
     )
     {
         this.existeEnLocal = boolExisteEnLocal;
+        this.vidaMaxima = jugador.vidaMaxima;
+        this.vidaActual = jugador.vidaActual;
     }
 
-    public Jugador(Entidad entidad, bool boolExisteEnLocal)
+    public Jugador(Entidad entidad, bool boolExisteEnLocal, float vidaMaxima = 5f, float vidaActual = 5f)
     :base(
         entidad
     )
     {
         this.existeEnLocal = boolExisteEnLocal;
+        this.vidaMaxima = vidaMaxima;
+        this.vidaActual = vidaActual;
     }
 
-    public void Update(float deltaTime, KeyboardState keyboardState, GamePadState gamePadState, Mapa mapa)
+    public override void Update(float deltaTime, KeyboardState keyboardState, GamePadState gamePadState, Mapa mapa)
     {
         MoverseTeclado(deltaTime, keyboardState, mapa);
         MoverseControl(deltaTime, gamePadState, mapa);
+        AccionesTeclado(keyboardState, mapa);
     }
 
     public void MoverseTeclado(float deltaTime, KeyboardState keyboardState, Mapa mapa)
@@ -101,7 +110,18 @@ public class Jugador : Entidad
             Rotar(deltaTime);
         }
     }
-
+    public void AccionesTeclado(KeyboardState keyboardState, Mapa mapa)
+    {
+        if(keyboardState.IsKeyDown(Keys.Space) && vecesDisparadas == 0)
+        {
+            Vector2 direccion = new Vector2((Single)Math.Cos(angulo), (Single)Math.Sin(angulo));
+            Proyectil proyectil = new Proyectil(posicion, direccion: direccion, velocidad: 5f);
+            RayCastRenderer.instancia.AñadirEntidadAListaDeEntidades(proyectil);
+            mapa.listaProyectiles.Add(proyectil);
+            vecesDisparadas += 1;
+            
+        }
+    }
     public void MoverseControl(float deltaTime, GamePadState gamePadState, Mapa mapa)
     {
         if (!gamePadState.IsConnected) { return; }
@@ -135,15 +155,18 @@ public class Jugador : Entidad
     public override void SerializarObjetoCompleto(Message mensaje, bool existeEnLocal = false)
     {
         base.SerializarObjetoCompleto(mensaje, existeEnLocal);
+        mensaje.Add(vidaMaxima);
+        mensaje.Add(vidaActual);
     }
     public override void SerializarObjetoParcial(Message mensaje)
     {
         base.SerializarObjetoParcial(mensaje);
+        mensaje.Add(vidaActual);
     }
 
     public override Jugador DeserializarObjetoCompleto(Message mensaje)
     {
-        Jugador jugadorADevolver = new Jugador(base.DeserializarObjetoCompleto(mensaje),false);
+        Jugador jugadorADevolver = new Jugador(base.DeserializarObjetoCompleto(mensaje),false, mensaje.GetFloat(), mensaje.GetFloat());
         jugadorADevolver.existeEnLocal = false;
         return jugadorADevolver;
     }
@@ -151,6 +174,7 @@ public class Jugador : Entidad
     public override void DeserializarObjetoParcial(Message mensaje)
     {
         base.DeserializarObjetoParcial(mensaje);
+        vidaActual = mensaje.GetFloat();
     }
     
 }

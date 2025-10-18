@@ -51,27 +51,29 @@ public class Mapa
         {
             this.diccionarioTexturas = diccionarioTexturas;
         }
+
+        this.listaProyectiles = new List<Proyectil>();
     }
 
-    public (float distancia, int idPared, float wallX) RayCast(Vector2 posicion, float angulo, float distanciaMaxima =10f) //la posicion es del jugador
+    public (float distancia, int idPared, float wallX) RayCast(Vector2 posicion, float angulo, float distanciaMaxima = 10f) //la posicion es del jugador
     {
         //indica en que parte de la pared/celda el rayo golpeo
         // Calcular la dirección del rayo
         Vector2 direccion = new Vector2((float)Math.Cos(angulo), (float)Math.Sin(angulo));
-    
+
         // Encontrar en qué celda de la grilla estamos
         int mapX = (int)posicion.X;  // Coordenada X de la celda actual
         int mapY = (int)posicion.Y;  // Coordenada Y de la celda actual
-        
+
         // Calcular deltaDistX y deltaDistY
         // Esto representa: "¿Qué distancia recorre el rayo para moverse 1 unidad en X/Y?"
         float deltaDistX = Math.Abs(1f / direccion.X);
         float deltaDistY = Math.Abs(1f / direccion.Y);
-        
+
         // Determinar dirección y calcular distancia inicial a las próximas líneas de grilla
         float sideDistX, sideDistY;
         int stepX, stepY;
-        
+
         if (direccion.X < 0) // Rayo va hacia la izquierda
         {
             stepX = -1;  // Nos moveremos hacia celdas con X menor
@@ -84,7 +86,7 @@ public class Mapa
             // Distancia desde nuestra posición hasta el borde derecho de la celda actual
             sideDistX = (mapX + 1.0f - posicion.X) * deltaDistX;
         }
-        
+
         if (direccion.Y < 0) // Rayo va hacia abajo
         {
             stepY = -1;
@@ -95,8 +97,8 @@ public class Mapa
             stepY = 1;
             sideDistY = (mapY + 1.0f - posicion.Y) * deltaDistY;
         }
-        
-        
+
+
         // El bucle principal - saltar entre líneas de grilla
         bool hit = false;
         int side = 0; // 0 = cruzamos una línea vertical, 1 = cruzamos una línea horizontal
@@ -152,7 +154,7 @@ public class Mapa
         }
 
         // Calcular la distancia exacta
-        
+
         float distanciaFinal;
         if (side == 0) // Golpeamos una pared vertical
         {
@@ -166,9 +168,9 @@ public class Mapa
         }
 
         wallx = wallx - (Single)Math.Floor(wallx);
-    
-    
-    return (distanciaFinal, idPared, wallx);
+
+
+        return (distanciaFinal, idPared, wallx);
     }
 
     //la posicion es del jugador
@@ -231,9 +233,22 @@ public class Mapa
         catch (System.Exception e)
         {
             Console.WriteLine(e.Message);
-            throw;
+            return true;
         }
 
     }
 
+
+    public void Update(float deltaTime)
+    {
+        if(listaProyectiles.Count > 0)
+        {
+            listaProyectiles.RemoveAll(x => x.debeEliminarse == true);
+            foreach (Proyectil item in listaProyectiles)
+            {
+                item.Update(deltaTime, this);
+            }
+        }
+        
+    }
 }

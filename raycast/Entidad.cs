@@ -149,10 +149,21 @@ public class Entidad
         angulo %= MathF.Tau; // MathF.Tau es igual a 2π
     }
 
-    public void Mover(Vector2 vectorObjetivo, float deltaTime)
+    public void MoverLerp(Vector2 vectorObjetivo, float deltaTime, float suavidadDeMovimiento)
     {
-        posicion = Vector2.Lerp(posicion, vectorObjetivo, 0.2f * deltaTime);
+        posicion = Vector2.Lerp(posicion, vectorObjetivo, suavidadDeMovimiento * deltaTime);
     }
+    public void MoverVelocidad(Vector2 direccion, float velocidad, float deltaTime)
+    {
+        posicion += direccion * velocidad * deltaTime;
+    }
+
+    public virtual void Update(float deltaTime, KeyboardState keyboardState, GamePadState gamePadState, Mapa mapa)
+    {}
+    public virtual void Update(float deltaTime, Mapa mapa)
+    {}
+    public virtual void Update(float deltaTime)
+    {}
 
     public enum PosYEnum
     {

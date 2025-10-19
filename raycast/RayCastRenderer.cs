@@ -127,6 +127,10 @@ public class RayCastRenderer
             //el resultado va a resultar en un rango de (0 a 1)
             posicionRelativa = (anguloSprite / jugador.campoDeVision) + 0.5f;
 
+            if(entidad.distanciaAJugador == 0)
+            {
+                continue;
+            }
             alturaSprite = entidad.alturaSprite / entidad.distanciaAJugador;
             anchoSprite = entidad.anchoSprite  / entidad.distanciaAJugador;
 
@@ -167,6 +171,11 @@ public class RayCastRenderer
     public void AñadirEntidadAListaDeEntidades(Entidad entidad)
     {
         listaEntidades.Add(entidad);
+    }
+
+    public void QuitarEntidadDeListaDeEntidades(Entidad entidad)
+    {
+        listaEntidades.Remove(entidad);
     }
 
     public void AñadirEntidadAListaDeEntidades(List<Entidad> entidades)

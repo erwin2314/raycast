@@ -16,12 +16,16 @@ public class Proyectil : Entidad
         float distanciaDeColision = 1f,
         int dueño = 0,
         float daño = 1,
-        float velocidad = 5f
+        float velocidad = 5f,
+        float anchoSprite = 256,
+        float alturaSprite = 256
     )
     : base
     (
         posicion,
-        idTextura: idTextura
+        idTextura: idTextura,
+        anchoSprite: anchoSprite,
+        alturaSprite: alturaSprite
     )
     {
         if (direccion == Vector2.Zero)
@@ -46,7 +50,7 @@ public class Proyectil : Entidad
         this.debeEliminarse = false;
         this.dueño = dueño;
         this.daño = daño;
-        
+
     }
 
     public Proyectil(Proyectil proyectil) : base(proyectil)
@@ -79,16 +83,23 @@ public class Proyectil : Entidad
     }
     public override void Update(float deltaTime, Mapa mapa)
     {
-        if(debeEliminarse == false)
+        if (debeEliminarse == false)
         {
             if (mapa.EsPared(posicion.X + (direccion.X * velocidad * deltaTime), posicion.Y + (direccion.Y * velocidad * deltaTime)))
             {
                 debeEliminarse = true;
                 return;
             }
-            
+
             MoverVelocidad(direccion, velocidad, deltaTime);
         }
-        
+
+    }
+    public static void  CrearProyectil(float angulo, Vector2 posicion, float velocidad = 15f, float alturaSprite = 128f, float anchoSprite = 128f)
+    {
+        Vector2 direccion = new Vector2((Single)Math.Cos(angulo), (Single)Math.Sin(angulo));
+        Proyectil proyectil = new Proyectil(posicion, direccion: direccion, velocidad: velocidad, alturaSprite: alturaSprite, anchoSprite: anchoSprite);
+        RayCastRenderer.instancia.AñadirEntidadAListaDeEntidades(proyectil);
+        Mapa.instancia.listaProyectiles.Add(proyectil);
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 public class Mapa
 {
+    public static Mapa instancia;
     public int[,] mapa_terreno;
     public Dictionary<int, GestorTexturas.IdTextura> diccionarioTexturas;
     public List<Proyectil> listaProyectiles;
@@ -53,6 +54,7 @@ public class Mapa
         }
 
         this.listaProyectiles = new List<Proyectil>();
+        instancia = this;
     }
 
     public (float distancia, int idPared, float wallX) RayCast(Vector2 posicion, float angulo, float distanciaMaxima = 10f) //la posicion es del jugador
@@ -243,7 +245,15 @@ public class Mapa
     {
         if(listaProyectiles.Count > 0)
         {
+            foreach (Proyectil item in listaProyectiles)
+            {
+                if(item.debeEliminarse == true)
+                {
+                    RayCastRenderer.instancia.QuitarEntidadDeListaDeEntidades(item);
+                }
+            }
             listaProyectiles.RemoveAll(x => x.debeEliminarse == true);
+            
             foreach (Proyectil item in listaProyectiles)
             {
                 item.Update(deltaTime, this);

@@ -9,7 +9,8 @@ public class Jugador : Entidad
 {
     public float vidaActual;
     public float vidaMaxima;
-    public int vecesDisparadas = 0;
+    public float tiempoEntreDisparos;
+    public float coolDownDisparo;
     public Jugador
     (
         Vector2 posicion = new Vector2(),
@@ -21,7 +22,8 @@ public class Jugador : Entidad
         GestorTexturas.IdTextura idTextura = GestorTexturas.IdTextura.placeHolder,
         bool existeEnLocal = true,
         bool seDibujaComoBilldoard = true,
-        float vidaMaxima = 5
+        float vidaMaxima = 5,
+        float tiempoEntreDisparos = 1
     ) 
     :base
     (
@@ -38,7 +40,8 @@ public class Jugador : Entidad
     {
         this.vidaMaxima = vidaMaxima;
         this.vidaActual = this.vidaMaxima;
-        this.vecesDisparadas = 0;
+        this.tiempoEntreDisparos = tiempoEntreDisparos;
+        this.coolDownDisparo = this.tiempoEntreDisparos;
     }
 
     public Jugador(Jugador jugador, bool boolExisteEnLocal)
@@ -50,9 +53,11 @@ public class Jugador : Entidad
         this.existeEnLocal = boolExisteEnLocal;
         this.vidaMaxima = jugador.vidaMaxima;
         this.vidaActual = jugador.vidaActual;
+        this.tiempoEntreDisparos = jugador.tiempoEntreDisparos;
+        this.coolDownDisparo = jugador.coolDownDisparo;
     }
 
-    public Jugador(Entidad entidad, bool boolExisteEnLocal, float vidaMaxima = 5f, float vidaActual = 5f)
+    public Jugador(Entidad entidad, bool boolExisteEnLocal, float vidaMaxima = 5f, float vidaActual = 5f, float tiempoEntreDisparos = 1f)
     :base(
         entidad
     )
@@ -60,6 +65,8 @@ public class Jugador : Entidad
         this.existeEnLocal = boolExisteEnLocal;
         this.vidaMaxima = vidaMaxima;
         this.vidaActual = vidaActual;
+        this.tiempoEntreDisparos = tiempoEntreDisparos;
+        this.coolDownDisparo = tiempoEntreDisparos;
     }
 
     public override void Update(float deltaTime, KeyboardState keyboardState, GamePadState gamePadState, Mapa mapa)
@@ -67,10 +74,20 @@ public class Jugador : Entidad
         MoverseTeclado(deltaTime, keyboardState, mapa);
         MoverseControl(deltaTime, gamePadState, mapa);
         AccionesTeclado(keyboardState, mapa);
+        AccionesControl(gamePadState, mapa);
+
+        if(coolDownDisparo > 0)
+        {
+            coolDownDisparo -= deltaTime;
+        }
     }
 
     public void MoverseTeclado(float deltaTime, KeyboardState keyboardState, Mapa mapa)
     {
+        if(keyboardState.GetPressedKeyCount() == 0)
+        {
+            return;
+        }
         Vector2 siguientePosicion = new Vector2();
         if (keyboardState.IsKeyDown(Keys.A))
         {
@@ -112,14 +129,14 @@ public class Jugador : Entidad
     }
     public void AccionesTeclado(KeyboardState keyboardState, Mapa mapa)
     {
-        if(keyboardState.IsKeyDown(Keys.Space) && vecesDisparadas == 0)
+        if(keyboardState.GetPressedKeyCount() == 0)
         {
-            Vector2 direccion = new Vector2((Single)Math.Cos(angulo), (Single)Math.Sin(angulo));
-            Proyectil proyectil = new Proyectil(posicion, direccion: direccion, velocidad: 5f);
-            RayCastRenderer.instancia.AñadirEntidadAListaDeEntidades(proyectil);
-            mapa.listaProyectiles.Add(proyectil);
-            vecesDisparadas += 1;
-            
+            return;
+        }
+        if(keyboardState.IsKeyDown(Keys.Space) && coolDownDisparo <= 0)
+        {
+            Proyectil.CrearProyectil(angulo, posicion);
+            coolDownDisparo += tiempoEntreDisparos; 
         }
     }
     public void MoverseControl(float deltaTime, GamePadState gamePadState, Mapa mapa)
@@ -127,7 +144,7 @@ public class Jugador : Entidad
         if (!gamePadState.IsConnected) { return; }
 
         Vector2 siguientePosicion = gamePadState.ThumbSticks.Left;
-        
+
         if (siguientePosicion == Vector2.Zero && Math.Abs(gamePadState.ThumbSticks.Right.X) < 0.15) { return; }
 
         //Aplicar la fórmula de rotación 2D correcta.
@@ -152,11 +169,21 @@ public class Jugador : Entidad
             Rotar(deltaTime, Math.Sign(gamePadState.ThumbSticks.Right.X), Math.Abs(gamePadState.ThumbSticks.Right.X));
         }
     }
+    public void AccionesControl(GamePadState gamePadState, Mapa mapa)
+    {
+        if (!gamePadState.IsConnected) { return; }
+        if(gamePadState.IsButtonDown(Buttons.RightTrigger) && coolDownDisparo <= 0)
+        {
+            Proyectil.CrearProyectil(angulo, posicion);
+            coolDownDisparo += tiempoEntreDisparos; 
+        }
+    }
     public override void SerializarObjetoCompleto(Message mensaje, bool existeEnLocal = false)
     {
         base.SerializarObjetoCompleto(mensaje, existeEnLocal);
         mensaje.Add(vidaMaxima);
         mensaje.Add(vidaActual);
+        mensaje.Add(tiempoEntreDisparos);
     }
     public override void SerializarObjetoParcial(Message mensaje)
     {
@@ -166,7 +193,7 @@ public class Jugador : Entidad
 
     public override Jugador DeserializarObjetoCompleto(Message mensaje)
     {
-        Jugador jugadorADevolver = new Jugador(base.DeserializarObjetoCompleto(mensaje),false, mensaje.GetFloat(), mensaje.GetFloat());
+        Jugador jugadorADevolver = new Jugador(base.DeserializarObjetoCompleto(mensaje),false, mensaje.GetFloat(), mensaje.GetFloat(), mensaje.GetFloat());
         jugadorADevolver.existeEnLocal = false;
         return jugadorADevolver;
     }

@@ -45,7 +45,7 @@ public class Proyectil : Entidad
         }
         else
         {
-            this.dueño = 0;
+            this.dueño = -1;
         }
         this.debeEliminarse = false;
         this.dueño = dueño;
@@ -95,7 +95,7 @@ public class Proyectil : Entidad
         }
 
     }
-    public static void  CrearProyectil(float angulo, Vector2 posicion, float velocidad = 15f, float alturaSprite = 128f, float anchoSprite = 128f)
+    public static void  CrearProyectil(float angulo = 0, Vector2 posicion = new Vector2(), float velocidad = 15f, float alturaSprite = 128f, float anchoSprite = 128f)
     {
         Vector2 direccion = new Vector2((Single)Math.Cos(angulo), (Single)Math.Sin(angulo));
         Proyectil proyectil = new Proyectil(posicion, direccion: direccion, velocidad: velocidad, alturaSprite: alturaSprite, anchoSprite: anchoSprite);

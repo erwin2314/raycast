@@ -10,6 +10,7 @@ public class ServidorManager
     public Dictionary<int, Jugador> jugadores;
     public ServidorManager(Jugador jugadorLocal = null)
     {
+        
         this.jugadorLocal = jugadorLocal;
         instancia = this;
         server = new Server();
@@ -90,6 +91,10 @@ public class ServidorManager
         }
     }
 
+    public void MandarACrearProyectil()
+    {
+        
+    }
     [MessageHandler((ushort)IdMensaje.MandarJugador)]
     public static void RecibirJugadorDeCliente(ushort fromClientId, Message mensaje)
     {

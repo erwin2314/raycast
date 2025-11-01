@@ -93,8 +93,9 @@ public class ServidorManager
 
     public void MandarACrearProyectil()
     {
-        
+
     }
+
     [MessageHandler((ushort)IdMensaje.MandarJugador)]
     public static void RecibirJugadorDeCliente(ushort fromClientId, Message mensaje)
     {
@@ -102,6 +103,7 @@ public class ServidorManager
         ServidorManager.instancia.MandarACrearJugadores();
         ServidorManager.instancia.AñadirJugadoresARenderer();
     }
+    
     [MessageHandler((ushort)IdMensaje.ActualizarJugador)]
     public static void ActualizarJugadorCliente(ushort fromClientId, Message mensaje)
     {
@@ -123,5 +125,6 @@ public class ServidorManager
         MandarJugador = 6,
         CrearJugador = 7,
         ActualizarJugadorServidor = 8,
+        
     }
 }

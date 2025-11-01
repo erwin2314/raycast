@@ -93,7 +93,7 @@ public class RayCastRenderer
 
         Vector2 vectorRelativo; //angulo relativo de la entidad y el jugador
         float anguloSprite = 0; //angulo de donde esta el sprite con respecto a donde mira el jugador (centro de la pantalla)
-        float posicionRelativa = 0; //es la posicion en la pantalla
+        float posicionRelativa = 0; //es la posicion en la pantalla, el resultado va a resultar en un rango de (0 a 1)
         float alturaSprite = 0;
         float anchoSprite = 0;
         float columnaCentro = 0; //posicion en la pantalla de la columna central
@@ -113,7 +113,7 @@ public class RayCastRenderer
         }
 
         listaEntidades = listaEntidades.OrderByDescending(x => x.distanciaAJugador).ToList<Entidad>();
-        //ordena la lista de entidades segun su distancia por orden descendente (mas grande va primero)
+        //ordena la lista de entidades segun su distancia por orden descendente (mas lejos va primero)
 
         foreach(Entidad entidad in listaEntidades)
         {
@@ -137,18 +137,19 @@ public class RayCastRenderer
             columnaCentro = posicionRelativa * anchoVentana;
             columnaInicio = columnaCentro - (anchoSprite / 2);
             columnaFinal = columnaCentro + (anchoSprite / 2);
-            intensidad = 6f / entidad.distanciaAJugador;
-            intensidad = Math.Clamp(intensidad, 0.001f, 1f);
+            intensidad = 6f / entidad.distanciaAJugador; //la intensidad con la que se dibujan los sprites (constante/distancia)
+            intensidad = Math.Clamp(intensidad, 0.001f, 1f); //la intensidad se pone entre 0.001f y 1f
 
-            if(columnaFinal < 0 || columnaInicio > anchoVentana)
+            if(columnaFinal < 0 || columnaInicio > anchoVentana) //determina si el sprite se ecuentra dentro de la pantalla
             {
-                return;
+                continue;
             }
             
-            for (int i = (int)columnaInicio; i < columnaFinal;i++)
+            for (int i = (int)columnaInicio; i < columnaFinal; i++)
             {
-
-                if (i > -1 && i < anchoVentana && paredesConDistancias[i] > entidad.distanciaAJugador)
+                //(determina si i esta a la derecha del borde izquierdo de la pantalla, determina si i esta a la 
+                // izquierda del borde derecho de la pantalla, revisa si en la posicion indicada la pared esta mas lejos)
+                if (i > -1 &&i < anchoVentana && paredesConDistancias[i] > entidad.distanciaAJugador)
                 {
                     progresoEnTextura = (i - columnaInicio) / (columnaFinal - columnaInicio);
                     // se multiplica por el ancho de la imagen para obtener el pixel correcto

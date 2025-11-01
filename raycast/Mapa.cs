@@ -57,6 +57,8 @@ public class Mapa
         instancia = this;
     }
 
+    //wallx es la parte de la pared que el rayo golpea
+    //idPared es la id que se manda al diccionarioTexturas del mapa
     public (float distancia, int idPared, float wallX) RayCast(Vector2 posicion, float angulo, float distanciaMaxima = 10f) //la posicion es del jugador
     {
         //indica en que parte de la pared/celda el rayo golpeo
